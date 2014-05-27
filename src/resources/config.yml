@@ -1,0 +1,37 @@
+# WHeroesAddon config by Wiedzmin137
+
+# Configs for SkillTrees
+SkillTree:
+  #Are the SkillTree enabled [WARNING: Need tests!]?
+  Enabled: true
+
+  #Sets how many SkillPoints the player will earn/lose per level.  
+  PointsPerLevel: 1
+
+  #Sets the cost to unlock a skill (PLANNED)
+  #CostToUnlock: 0
+
+  #Sets the cost to level up a skill (PLANNED)
+  #CostToLevelUp: 0
+
+  #Sets the cost to level down a skill (PLANNED)
+  #CostToLevelDown: 0
+
+  #Sets the cost to reset all stats (PLANNED)
+  #CostToReset: 0
+
+# Configs for Holograms
+Hologram:
+  #Are the Holograms enabled?
+  Enabled: true
+
+  #How much holograms should be (seconds)
+  Time: 2.5
+
+# If is class choosing on login is enabled (menu definied by SMS)?
+UseJoinChoose: true
+
+#SkillList for support GUI plugins (PLANNED)
+SkillList:
+  "1": [N, N, S, N, N, N, S, N, N]
+  "2": [N, S, N, N, N, N, N, S, N]
