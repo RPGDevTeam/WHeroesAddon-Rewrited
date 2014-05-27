@@ -1,13 +1,18 @@
-package me.wiedzmin137.wheroesaddon;
+package me.wiedzmin137.wheroesaddon.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
+import me.wiedzmin137.wheroesaddon.WHeroesAddon;
+
+import org.bukkit.configuration.file.YamlConfiguration;
+
 public class Config {
 	private String fileName;
 	private File dataFolder;
 	private File file;
+	private YamlConfiguration yamlConf;
 	
 	public Config(WHeroesAddon plugin, String fileName) throws Exception {
 		this.fileName = fileName;
@@ -15,6 +20,8 @@ public class Config {
 		this.file = new File(dataFolder, fileName);
 		
 		checkFile(file);
+		
+		yamlConf = YamlConfiguration.loadConfiguration(getFile());
 	}
 	
     public static void checkFile(File out) throws Exception {
@@ -40,6 +47,7 @@ public class Config {
     	}
     }
     
+    public YamlConfiguration getYAMLConfiguration() { return yamlConf; }
     public String getName() { return fileName; }
     public File getFile() { return file; }
 }
