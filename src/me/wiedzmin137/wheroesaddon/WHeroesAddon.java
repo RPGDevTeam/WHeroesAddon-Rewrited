@@ -1,10 +1,13 @@
 package me.wiedzmin137.wheroesaddon;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import me.wiedzmin137.wheroesaddon.commands.CommandManager;
 import me.wiedzmin137.wheroesaddon.util.Config;
 import me.wiedzmin137.wheroesaddon.util.Lang;
+import me.wiedzmin137.wheroesaddon.util.Properties;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,12 +16,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.herocraftonline.heroes.Heroes;
 
 public class WHeroesAddon extends JavaPlugin {
-	private static WHeroesAddon instance;
-	public static Heroes heroes;
 	public final static Logger LOG = Logger.getLogger("Minecraft");
+	public static Heroes heroes;
+	
+	private static WHeroesAddon instance;
 	
 	private Config config;
 	private Config lang;
+	
+	private CommandManager commandManager;
 	
 	@Override
 	public void onEnable() {
@@ -31,6 +37,11 @@ public class WHeroesAddon extends JavaPlugin {
 			return;
 		}
 		
+		File file = getDataFolder();
+		if (!file.exists()) {
+			file.mkdir();
+		}
+		
 		try {
 			config = new Config(this, "config.yml");
 			lang = new Config(this, "lang.yml");
@@ -39,12 +50,7 @@ public class WHeroesAddon extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
-		loadLang(getLangManager().getYAMLConfiguration());
-		
-		LOG.info("[WHeroesAddon] vA0.2 has been enabled!");
-	}
-	
-	private void loadLang(YamlConfiguration conf) {
+		YamlConfiguration conf = getLangManager().getYAMLConfiguration();
 		for (Lang item : Lang.values()) {
 			if (conf.getString(item.getPath()) == null) {
 				conf.set(item.getPath(), item.getDefault());
@@ -58,18 +64,26 @@ public class WHeroesAddon extends JavaPlugin {
 			LOG.warning("[WHeroesAddon] Report this stack trace to Wiedzmin137.");
 			e.printStackTrace();
 		}
+		
+		commandManager = new CommandManager(this);
+		
+		LOG.info("[WHeroesAddon] vA0.2 has been enabled!");
 	}
+
 	
 	@Override
 	public void onDisable() {
-		instance = null;
+		commandManager = null;
 		
 		config = null;
 		lang = null;
+		
+		instance = null;
 	}
 	
 	public Config getConfigManager() { return config; }
 	public Config getLangManager() { return lang; }
+	public CommandManager getCommandManager() { return commandManager; }
 	
 	public static WHeroesAddon getInstance() { return instance; }
 }
