@@ -21,6 +21,7 @@ public class CommandManager implements CommandExecutor {
 				if (args.length > 0) {
 					switch (args[0]) {
 						case "Test": sender.sendMessage("It should work!"); break;
+						case "Choose": ChooseCommand.showClassChoose((Player)sender); break;
 						default: sender.sendMessage("[WHeroesAddon] Command not found. Use:");
 								 showInfo(sender);
 					}

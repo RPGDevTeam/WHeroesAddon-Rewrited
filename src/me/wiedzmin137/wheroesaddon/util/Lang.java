@@ -9,8 +9,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
 * @author Wiedzmin137
 */
 public enum Lang {
-	TITLE("Title.MainTitle", "&1[&bSkillTree&1]&r");
-
+	TITLE("Title.MainTitle", "&1[&bSkillTree&1]&r"),
+	TITLE_ITEM_GUI("Title.ItemGUI", "&1[&9 %class% &1]&r"),
+	GUI_INVAILD_SKILLS("GUI.InvaildSkills", "Skill %skill% has no valid identifiers and can not be used on the menu! Please contact the author to fix the skill."),
+	GUI_LORE("GUI.Lore", "&eClick for use!"),
+	GUI_LORE_LEVEL("GUI.LoreLevel", "&f&oSkillLevel: %level%/%maxLevel%"),
+	GUI_LORE_MANA("GUI.LoreMana", "&f&oMana: %manaCost%"),
+	GUI_TITLE_SKILL("GUI.TitleSkill", "&2&l[&r&a%skill%&2&l]"),
+	GUI_TITLE_CHOOSE("GUI.TitleChoose", "&1== &bChoose your class! &1==");
+	
 	private String path;
 	private String def;
 	private static YamlConfiguration LANG;

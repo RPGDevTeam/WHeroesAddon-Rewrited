@@ -1,9 +1,12 @@
 package me.wiedzmin137.wheroesaddon;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
+import me.desht.scrollingmenusign.ScrollingMenuSign;
 import me.wiedzmin137.wheroesaddon.commands.CommandManager;
 import me.wiedzmin137.wheroesaddon.util.Config;
 import me.wiedzmin137.wheroesaddon.util.Lang;
@@ -11,13 +14,17 @@ import me.wiedzmin137.wheroesaddon.util.Properties;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.herocraftonline.heroes.Heroes;
+import com.herocraftonline.heroes.characters.classes.HeroClass;
 
 public class WHeroesAddon extends JavaPlugin {
 	public final static Logger LOG = Logger.getLogger("Minecraft");
 	public static Heroes heroes;
+	private ScrollingMenuSign sms;
 	
 	private static WHeroesAddon instance;
 	
@@ -27,17 +34,22 @@ public class WHeroesAddon extends JavaPlugin {
 	private CommandManager commandManager;
 	private Properties properties;
 	
+	private HashMap<HeroClass, SkillTree> skillTrees = new HashMap<HeroClass, SkillTree>();
+	private HashMap<Player, PlayerData> pData = new HashMap<Player, PlayerData>();
+	
 	@Override
 	public void onEnable() {
 		instance = this;
 		heroes = (Heroes) Bukkit.getServer().getPluginManager().getPlugin("Heroes");
 		
+		//Check is Heroes exists
 		if (heroes == null) {
 			LOG.warning("[WHeroesAddon] Requires Heroes to run for now, please download it");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
 		
+		//Load and optionally create configs if not exist
 		try {
 			config = new Config(this, "config.yml");
 			lang = new Config(this, "lang.yml");
@@ -46,6 +58,7 @@ public class WHeroesAddon extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
+		//Load Lang lines
 		YamlConfiguration conf = getLangManager().getYAML();
 		for (Lang item : Lang.values()) {
 			if (conf.getString(item.getPath()) == null) {
@@ -61,8 +74,32 @@ public class WHeroesAddon extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
+		//Load Properties class
 		properties = new Properties(this);
+		//Initialize CommandManager for handling commands
 		commandManager = new CommandManager(this);
+		
+		//Create SkillTrees for all HeroClass
+		for (HeroClass hClass : heroes.getClassManager().getClasses()) {
+			SkillTree st = new SkillTree(this, hClass, sms);
+			skillTrees.put(hClass, st);
+		}
+		
+		//Set "skilltree" command Executor in CommandManager
+		getCommand("skilltree").setExecutor(new CommandManager(this));
+		
+		//Create data for all exists players (if you reload plugin by PlugMan)
+		for (Player player : getServer().getOnlinePlayers()) {
+			PlayerData pd = new PlayerData(this, player);
+			pData.put(player, pd);
+		}
+		
+		//Check if ScrollingMenuSign exists and allow CommandManager handle SkillTree GUI commands
+		Plugin p = getServer().getPluginManager().getPlugin("ScrollingMenuSign");
+		if (p instanceof ScrollingMenuSign && p.isEnabled()) {
+			sms = (ScrollingMenuSign) p;
+			LOG.info("[WHeroesAddon] ScrollingMenuSign integration is enabled; menus created");
+		} else {/*Plugin is not available*/}
 		
 		LOG.info("[WHeroesAddon] vA0.2 has been enabled!");
 	}
@@ -82,6 +119,8 @@ public class WHeroesAddon extends JavaPlugin {
 	public Config getLangManager() { return lang; }
 	public CommandManager getCommandManager() { return commandManager; }
 	public Properties getProperties() { return properties; }
+	public SkillTree getSkillTree(HeroClass hc) { return skillTrees.get(hc); }
+	public PlayerData getPlayerData(Player player) { return pData.get(player); }
 	
 	public static WHeroesAddon getInstance() { return instance; }
 }
