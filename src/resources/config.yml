@@ -6,16 +6,27 @@ SkillTree:
   Enabled: true
 
   #Sets how many SkillPoints the player will earn/lose per level.  
-  PointsPerLevel: 1
+  Points_Per_Level: 1
 
   #Sets the cost to unlock a skill (PLANNED)
-  #CostToUnlock: 0
+  #Cost_Unlock: 0
 
   #Sets the cost to level up a skill (PLANNED)
-  #CostToLevelUp: 0
+  #Cost_Level_Up: 0
 
   #Sets the cost to level down a skill (PLANNED)
-  #CostToLevelDown: 0
+  #Cost_Level_Down: 0
 
   #Sets the cost to reset all stats (PLANNED)
-  #CostToReset: 0
+  #Cost_Reset: 0
+
+#Configs for MobArena support
+MobArena:
+  #Disable Heroes XP gaining on mob-kill in Arena
+  EXP_Disabled: true
+  
+  #Sets the XP gained on mob-kill in Arena
+  EXP_Multipiler: 0.5
+
+  #Sets the XP multipiler removed on death in Arena
+  EXP_Death_Multipiler: 0.1

@@ -1,26 +1,27 @@
 package me.wiedzmin137.wheroesaddon.util;
 
-public enum Properties {
-	SKILLTREE_ENABLED("SkillTree.Enabled", "true"),
-	SKILLTREE_POINTS_PER_LEVEL("SkillTree.PointsPerLevel", "1"),
-	SKILLTREE_COST_UNLOCK("SkillTree.CostToUnlock", "0"),
-	SKILLTREE_COST_LEVEL_UP("SkillTree.CostToLevelUp", "0"),
-	SKILLTREE_COST_LEVEL_DOWN("SkillTree.CostToLevelDown", "0"),
-	SKILLTREE_COST_RESET("SkillTree.CostToReset", "0");
+import org.bukkit.configuration.file.YamlConfiguration;
 
-	private String path;
-	private Object def;
+import me.wiedzmin137.wheroesaddon.WHeroesAddon;
+
+public class Properties {
+	private WHeroesAddon plugin;
 	
-	Properties(String path, Object start) {
-		this.path = path;
-		this.def = start;
+	public Properties(WHeroesAddon wHeroesAddon) {
+		YamlConfiguration yaml = wHeroesAddon.getConfigManager().getYAML();
+		this.plugin = wHeroesAddon;
+		
+		STEnabled = yaml.getBoolean("SkillTree.Enabled", true);
+		STPointsPerLevel = yaml.getInt("SkillTree.Points_Per_Level", 1);
+		STCostUnlock = yaml.getInt("SkillTree.Cost_Unlock", 0);
+		STCostLevelUP = yaml.getInt("SkillTree.Cost_Level_Up", 0);
+		STCostLevelDown = yaml.getInt("SkillTree.Cost_Level_Down", 0);
+		STCostReset = yaml.getInt("SkillTree.Cost_Reset", 0);
 	}
-	
-	public Object getDefault() {
-		return this.def;
-	}
-	
-	public String getPath() {
-		return this.path;
-	}
+	public boolean STEnabled = true;
+	public int STPointsPerLevel = 1;
+	public int STCostUnlock = 0;;
+	public int STCostLevelUP = 0;
+	public int STCostLevelDown = 0;
+	public int STCostReset = 0;
 }

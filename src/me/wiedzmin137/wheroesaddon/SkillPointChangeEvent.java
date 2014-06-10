@@ -1,4 +1,4 @@
-package me.wiedzmin137.wheroesaddon.events;
+package me.wiedzmin137.wheroesaddon;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

@@ -25,6 +25,7 @@ public class WHeroesAddon extends JavaPlugin {
 	private Config lang;
 	
 	private CommandManager commandManager;
+	private Properties properties;
 	
 	@Override
 	public void onEnable() {
@@ -37,11 +38,6 @@ public class WHeroesAddon extends JavaPlugin {
 			return;
 		}
 		
-		File file = getDataFolder();
-		if (!file.exists()) {
-			file.mkdir();
-		}
-		
 		try {
 			config = new Config(this, "config.yml");
 			lang = new Config(this, "lang.yml");
@@ -50,7 +46,7 @@ public class WHeroesAddon extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
-		YamlConfiguration conf = getLangManager().getYAMLConfiguration();
+		YamlConfiguration conf = getLangManager().getYAML();
 		for (Lang item : Lang.values()) {
 			if (conf.getString(item.getPath()) == null) {
 				conf.set(item.getPath(), item.getDefault());
@@ -65,6 +61,7 @@ public class WHeroesAddon extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
+		properties = new Properties(this);
 		commandManager = new CommandManager(this);
 		
 		LOG.info("[WHeroesAddon] vA0.2 has been enabled!");
@@ -84,6 +81,7 @@ public class WHeroesAddon extends JavaPlugin {
 	public Config getConfigManager() { return config; }
 	public Config getLangManager() { return lang; }
 	public CommandManager getCommandManager() { return commandManager; }
+	public Properties getProperties() { return properties; }
 	
 	public static WHeroesAddon getInstance() { return instance; }
 }

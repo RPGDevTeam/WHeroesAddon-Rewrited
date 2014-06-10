@@ -13,10 +13,10 @@ import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 
 public class PlayerListener implements Listener {
-	private WHeroesAddon plugin;
+	private WHeroesAddon p;
 	
 	public PlayerListener(WHeroesAddon plugin /*, SkillTreeManager or somewhat*/) {
-		this.plugin = plugin;
+		this.p = plugin;
 	}
 	
 	@EventHandler

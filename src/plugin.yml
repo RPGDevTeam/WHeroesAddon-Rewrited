@@ -2,5 +2,7 @@ name: WHeroesAddon
 main: me.wiedzmin137.wheroesaddon.WHeroesAddon
 version: A0.2
 authors: [Wiedzmin137, Whatshiywl, Bednar12]
+softdepend: [Heroes, ScrollingMenuSign, MobArena]
+
 website: https://github.com/RPGDevTeam/WHeroesAddon-Rewrited
 description: Brings skill trees to the Heroes plugin.

@@ -20,6 +20,10 @@ public class Config {
 		this.file = new File(dataFolder, fileName);
 		WHeroesAddon.LOG.info(file.toString());
 		
+		if (!dataFolder.exists()) {
+			dataFolder.mkdir();
+		}
+		
 		checkFile(file);
 		
 		yamlConf = YamlConfiguration.loadConfiguration(getFile());
@@ -48,7 +52,7 @@ public class Config {
 		}
 	}
 	
-	public YamlConfiguration getYAMLConfiguration() { return yamlConf; }
+	public YamlConfiguration getYAML() { return yamlConf; }
 	public String getName() { return fileName; }
 	public File getFile() { return file; }
 }
