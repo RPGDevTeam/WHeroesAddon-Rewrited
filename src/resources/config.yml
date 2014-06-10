@@ -19,14 +19,3 @@ SkillTree:
 
   #Sets the cost to reset all stats (PLANNED)
   #Cost_Reset: 0
-
-#Configs for MobArena support
-MobArena:
-  #Disable Heroes XP gaining on mob-kill in Arena
-  EXP_Disabled: true
-  
-  #Sets the XP gained on mob-kill in Arena
-  EXP_Multipiler: 0.5
-
-  #Sets the XP multipiler removed on death in Arena
-  EXP_Death_Multipiler: 0.1
