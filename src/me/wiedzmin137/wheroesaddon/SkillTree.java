@@ -19,6 +19,13 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
+/**
+ * 
+ * @author Wiedzmin137
+ * SkillTree is Object which can tells you something about
+ * skill inheritance and requirements.
+ * 
+ */
 public class SkillTree {
 	private HeroClass hClass;
 	private WHeroesAddon plugin;

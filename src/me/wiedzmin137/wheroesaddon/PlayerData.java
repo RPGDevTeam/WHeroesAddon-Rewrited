@@ -8,16 +8,25 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
+
+/**
+ * 
+ * @author Wiedzmin
+ * Simple class storing data for each Player
+ *
+ */
 public class PlayerData {
 	private WHeroesAddon plugin;
-	private int playerPoints;
 	
 	private Player player;
 	private HeroClass hClass;
 	private Hero hero;
 	
+	//Player statistics
 	private HashMap<String, Integer> skills = new HashMap<String, Integer>();
+	private int playerPoints;
 	
+	//Creating instace of PlayerData for proper Player count PlayerPoints
 	public PlayerData(WHeroesAddon plugin, Player player) {
 		this.plugin = plugin;
 		this.hero = WHeroesAddon.heroes.getCharacterManager().getHero(player);
@@ -33,6 +42,8 @@ public class PlayerData {
 		if (Integer.valueOf(playerPoints) == null) {
 			playerPoints = countPlayerPoints(player);
 		}
+		
+		//TODO add saving method
 	}
 	
 	public boolean upgradeSkill(Skill skill, int amount) {
@@ -48,7 +59,7 @@ public class PlayerData {
 		if (level >= getMaxLevel(skill))
 			return false;
 		
-		//TODO add some checkers like level == 0, permissions, Vault
+		//TODO add some checkers like skilllevel == 0, permissions, Vault
 		
 		//Upgrader
 		playerPoints -= amount;
@@ -61,6 +72,8 @@ public class PlayerData {
 	
 	public boolean downgradeSkill(Skill skill, int amount) {
 		if (skills.get(skill.getName().toLowerCase()) > 0) return false;
+		
+		//TODO add some checkers
 		
 		playerPoints += amount;
 		skills.put(skill.getName().toLowerCase(), skills.get(skill.getName().toLowerCase()) - amount);

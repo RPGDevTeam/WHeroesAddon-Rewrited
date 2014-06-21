@@ -5,6 +5,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 
 public class Properties {
+	//TODO [Bad conding detected] - I'll change it all
+	
 	private WHeroesAddon plugin;
 	
 	public Properties(WHeroesAddon wHeroesAddon) {
