@@ -16,7 +16,8 @@ public enum Lang {
 	GUI_LORE_LEVEL("GUI.LoreLevel", "&f&oSkillLevel: %level%/%maxLevel%"),
 	GUI_LORE_MANA("GUI.LoreMana", "&f&oMana: %manaCost%"),
 	GUI_TITLE_SKILL("GUI.TitleSkill", "&2&l[&r&a%skill%&2&l]"),
-	GUI_TITLE_CHOOSE("GUI.TitleChoose", "&1== &bChoose your class! &1==");
+	GUI_TITLE_CHOOSE("GUI.TitleChoose", "&1== &bChoose your class! &1=="),
+	SKILLTREE_GAIN("SkillTree.Gain", "You have gained %amount% skill points!");
 	
 	private String path;
 	private String def;

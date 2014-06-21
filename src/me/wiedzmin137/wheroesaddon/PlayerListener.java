@@ -1,5 +1,10 @@
 package me.wiedzmin137.wheroesaddon;
 
+import me.wiedzmin137.wheroesaddon.util.Lang;
+import me.wiedzmin137.wheroesaddon.util.Properties;
+import me.wiedzmin137.wheroesaddon.util.SkillPointChangeEvent;
+
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -9,17 +14,33 @@ import com.herocraftonline.heroes.api.events.ClassChangeEvent;
 import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
 import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
+import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.effects.Effect;
+import com.herocraftonline.heroes.characters.skill.Skill;
 
 public class PlayerListener implements Listener {
 	private WHeroesAddon p;
 	
-	public PlayerListener(WHeroesAddon plugin /*, SkillTreeManager or somewhat*/) {
+	public PlayerListener(WHeroesAddon plugin) {
 		this.p = plugin;
 	}
 	
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
+	public void onPlayerJoin(final PlayerJoinEvent event) {
 		p.getDatabaseManager().loadPlayer(event.getPlayer());
+		
+		final Hero hero = WHeroesAddon.heroes.getCharacterManager().getHero(event.getPlayer());
+		Bukkit.getScheduler().scheduleSyncDelayedTask(p, new Runnable() {
+			public void run() {
+				for (Effect effect : hero.getEffects()) {
+					Skill skill = WHeroesAddon.heroes.getSkillManager().getSkill(effect.getName());
+					if (skill != null) {
+						if (WHeroesAddon.getInstance().getPlayerData(event.getPlayer()).isLocked(skill))
+							hero.removeEffect(effect);
+					}
+				}
+			}
+		 }, 1L);
 	}
 	
 	@EventHandler
@@ -29,7 +50,20 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onLevelChange(HeroChangeLevelEvent event) {
-		//TODO change players Skill Data
+		final Hero hero = event.getHero();
+		PlayerData pd = p.getPlayerData(event.getHero().getPlayer());
+		int amount = (event.getTo() - event.getFrom()) * (int)Properties.SKILLTREE_POINTS_PER_LEVEL.getValue();
+		pd.setPoints(amount + pd.getPlayerPoints());
+		if (hero.getHeroClass() != event.getHeroClass()) {
+			return;
+		}
+		new SkillPointChangeEvent(hero.getPlayer(), hero.getHeroClass(), amount - pd.getPlayerPoints());
+	}
+	
+	@EventHandler
+	public void onPointGain(SkillPointChangeEvent event) {
+		p.getDatabaseManager().savePlayer(WHeroesAddon.getInstance().getPlayerData(event.getPlayer()));
+		event.getPlayer().sendMessage(Lang.SKILLTREE_GAIN.toString().replace("%amount%", String.valueOf(WHeroesAddon.getInstance().getPlayerData(event.getPlayer()).getPlayerPoints())));
 	}
 	
 	@EventHandler

@@ -1,9 +1,7 @@
 package me.wiedzmin137.wheroesaddon;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Logger;
 
 import me.desht.scrollingmenusign.ScrollingMenuSign;

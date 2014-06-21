@@ -1,6 +1,13 @@
 package me.wiedzmin137.wheroesaddon.util;
 
+import java.io.File;
+
+import me.wiedzmin137.wheroesaddon.WHeroesAddon;
+
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import com.herocraftonline.heroes.characters.classes.HeroClass;
 
 
 public enum Properties {
@@ -40,5 +47,23 @@ public enum Properties {
 	
 	public static void setFile(YamlConfiguration config) {
 		PROPERTIES = config;
+	}
+	
+	public static FileConfiguration getHeroesProperties(HeroClass hClass) {
+		File classFolder = new File(WHeroesAddon.heroes.getDataFolder(), "classes");
+		for (File f : classFolder.listFiles()) {
+			FileConfiguration config = new YamlConfiguration();
+			try {
+				config.load(f);
+				String currentClassName = config.getString("name");
+				if (currentClassName.equalsIgnoreCase(hClass.getName())) {
+					return config;
+				}
+			}
+			catch (Exception localException) {
+				WHeroesAddon.LOG.warning("[WHeroesAddon] Failed try to load HeroClasses from Heroes plugin.");
+			}
+		}
+		return null;
 	}
 }

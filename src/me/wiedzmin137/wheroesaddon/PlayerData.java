@@ -1,6 +1,7 @@
 package me.wiedzmin137.wheroesaddon;
 
 import java.util.HashMap;
+import java.util.List;
 
 import me.wiedzmin137.wheroesaddon.util.Properties;
 import me.wiedzmin137.wheroesaddon.util.SkillPointChangeEvent;
@@ -102,6 +103,19 @@ public class PlayerData {
 	
 	public boolean hasSkill(Skill skill) {
 		return skills.containsKey(skill);
+	}
+	
+	public boolean isLocked(Skill skill) {
+		if (skill != null && hero.canUseSkill(skill)) {
+			List<String> strongParents = WHeroesAddon.getInstance().getSkillTree(hero.getHeroClass()).getStrongParentSkills(skill);
+			List<String> weakParents = WHeroesAddon.getInstance().getSkillTree(hero.getHeroClass()).getWeakParentSkills(skill);
+			boolean skillLevel = WHeroesAddon.getInstance().getPlayerData(hero.getPlayer()).getSkillLevel(skill) < 1;
+			boolean hasStrongParents = strongParents != null && !strongParents.isEmpty();
+			boolean hasWeakParents = weakParents != null && !weakParents.isEmpty();
+			return skillLevel && hasStrongParents || hasWeakParents;
+		} else {
+			return true;
+		}
 	}
 	
 	public int getSkillLevel(Skill skill) {

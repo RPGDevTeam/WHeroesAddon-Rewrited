@@ -1,5 +1,6 @@
 package me.wiedzmin137.wheroesaddon;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import me.desht.scrollingmenusign.ScrollingMenuSign;
 import me.desht.scrollingmenusign.enums.SMSMenuAction;
 import me.desht.scrollingmenusign.views.SMSInventoryView;
 import me.wiedzmin137.wheroesaddon.util.Lang;
+import me.wiedzmin137.wheroesaddon.util.Properties;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.heroes.characters.classes.HeroClass;
@@ -35,6 +38,9 @@ public class SkillTree {
 	
 	private List<Skill> skills;
 	private HashMap<Skill, Integer> skillLevel;
+	
+	public List<Skill> SkillStrongParents = new ArrayList<Skill>();
+	public List<Skill> SkillWeakParents = new ArrayList<Skill>();
 	
 	public SkillTree(WHeroesAddon plugin, HeroClass hClass, ScrollingMenuSign menuPlugin) {
 		this.plugin = plugin;
@@ -113,6 +119,21 @@ public class SkillTree {
 		view.setAutosave(true);
 
 		view.toggleGUI(player);
+	}
+	
+	public List<String> getStrongParentSkills(Skill skill) {
+		return getParentSkills(skill, "strong");
+	}
+
+	public List<String> getWeakParentSkills(Skill skill) {
+		return getParentSkills(skill, "weak");
+	}
+	
+	public List<String> getParentSkills(Skill skill, String weakOrStrong) {
+		FileConfiguration hCConfig = Properties.getHeroesProperties(hClass);
+		return (hCConfig.getConfigurationSection("permitted-skills." + skill.getName() + ".parents") == null) ? null
+				: hCConfig.getConfigurationSection("permitted-skills." + skill.getName() + ".parents")
+				.getStringList(weakOrStrong);
 	}
 	
 	protected int getMaxLevel(Skill skill) {
