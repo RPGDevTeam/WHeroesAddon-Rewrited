@@ -30,9 +30,11 @@ public class WHeroesAddon extends JavaPlugin {
 	
 	private Config config;
 	private Config lang;
+	private Config prop;
 	
 	private CommandManager commandManager;
 	private Properties properties;
+	private DataManager dataManager;
 	
 	private HashMap<HeroClass, SkillTree> skillTrees = new HashMap<HeroClass, SkillTree>();
 	private HashMap<Player, PlayerData> pData = new HashMap<Player, PlayerData>();
@@ -58,24 +60,8 @@ public class WHeroesAddon extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
-		//Load Lang lines
-		YamlConfiguration conf = getLangManager().getYAML();
-		for (Lang item : Lang.values()) {
-			if (conf.getString(item.getPath()) == null) {
-				conf.set(item.getPath(), item.getDefault());
-			}
-		}
-		Lang.setFile(conf);
-		try {
-			conf.save(getLangManager().getFile());
-		} catch (IOException e) {
-			LOG.warning("[WHeroesAddon] Failed to save lang.yml.");
-			LOG.warning("[WHeroesAddon] Report this stack trace to Wiedzmin137.");
-			e.printStackTrace();
-		}
+		loadProperties();
 		
-		//Load Properties class
-		properties = new Properties(this);
 		//Initialize CommandManager for handling commands
 		commandManager = new CommandManager(this);
 		
@@ -87,6 +73,9 @@ public class WHeroesAddon extends JavaPlugin {
 		
 		//Set "skilltree" command Executor in CommandManager
 		getCommand("skilltree").setExecutor(new CommandManager(this));
+		
+		dataManager = new DataManager(this);
+		dataManager.setDatabase((boolean)Properties.MYSQL_ENABLED.getValue());
 		
 		//Create data for all exists players (if you reload plugin by PlugMan)
 		for (Player player : getServer().getOnlinePlayers()) {
@@ -109,18 +98,55 @@ public class WHeroesAddon extends JavaPlugin {
 	public void onDisable() {
 		commandManager = null;
 		
+		dataManager = null;
 		config = null;
 		lang = null;
 		
 		instance = null;
 	}
 	
+	private void loadProperties() {
+		//Load language
+		YamlConfiguration lang = getLangManager().getYAML();
+		for (Lang item : Lang.values()) {
+			if (lang.getString(item.getPath()) == null) {
+				lang.set(item.getPath(), item.getDefault());
+			}
+		}
+		Lang.setFile(lang);
+		try {
+			lang.save(getLangManager().getFile());
+		} catch (IOException e) {
+			LOG.warning("[WHeroesAddon] Failed to save lang.yml.");
+			LOG.warning("[WHeroesAddon] Report this stack trace to Wiedzmin137.");
+			e.printStackTrace();
+		}
+		
+		//Load Properties
+		YamlConfiguration prop = getPropertiesMagager().getYAML();
+		for (Properties item : Properties.values()) {
+			if (prop.getString(item.getPath()) == null) {
+				prop.set(item.getPath(), item.getDefault());
+			}
+		}
+		Properties.setFile(prop);
+		try {
+			prop.save(getPropertiesMagager().getFile());
+		} catch (IOException e) {
+			LOG.warning("[WHeroesAddon] Failed to save lang.yml.");
+			LOG.warning("[WHeroesAddon] Report this stack trace to Wiedzmin137.");
+			e.printStackTrace();
+		}
+	}
+	
 	public Config getConfigManager() { return config; }
 	public Config getLangManager() { return lang; }
+	public Config getPropertiesMagager() { return prop; }
 	public CommandManager getCommandManager() { return commandManager; }
 	public Properties getProperties() { return properties; }
 	public SkillTree getSkillTree(HeroClass hc) { return skillTrees.get(hc); }
 	public PlayerData getPlayerData(Player player) { return pData.get(player); }
+	public DataManager getDatabaseManager() { return dataManager; }
 	
 	public static WHeroesAddon getInstance() { return instance; }
 }

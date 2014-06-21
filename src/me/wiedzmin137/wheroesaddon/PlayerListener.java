@@ -1,6 +1,4 @@
-package me.wiedzmin137.wheroesaddon.listeners;
-
-import me.wiedzmin137.wheroesaddon.WHeroesAddon;
+package me.wiedzmin137.wheroesaddon;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,22 +19,22 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		//TODO load player data
+		p.getDatabaseManager().loadPlayer(event.getPlayer());
 	}
 	
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event) {
-		//TODO save player data
+		p.getDatabaseManager().savePlayer(p.getPlayerData(event.getPlayer()));
 	}
 	
 	@EventHandler
 	public void onLevelChange(HeroChangeLevelEvent event) {
-		//TODO change players SkillPoints
+		//TODO change players Skill Data
 	}
 	
 	@EventHandler
 	public void onClassChangeEvent(ClassChangeEvent event) {
-		//TODO change players SkillTree
+		//TODO change players Skill Data
 	}
 	
 	@EventHandler

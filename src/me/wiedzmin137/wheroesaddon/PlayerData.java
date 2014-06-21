@@ -2,6 +2,9 @@ package me.wiedzmin137.wheroesaddon;
 
 import java.util.HashMap;
 
+import me.wiedzmin137.wheroesaddon.util.Properties;
+import me.wiedzmin137.wheroesaddon.util.SkillPointChangeEvent;
+
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.heroes.characters.Hero;
@@ -19,8 +22,8 @@ public class PlayerData {
 	private WHeroesAddon plugin;
 	
 	private Player player;
-	private HeroClass hClass;
 	private Hero hero;
+	private HeroClass hClass;
 	
 	//Player statistics
 	private HashMap<String, Integer> skills = new HashMap<String, Integer>();
@@ -38,12 +41,9 @@ public class PlayerData {
 			}
 		}
 		
-		//TODO if player have not playerPoints, count it
 		if (Integer.valueOf(playerPoints) == null) {
-			playerPoints = countPlayerPoints(player);
+			playerPoints = countPlayerPoints();
 		}
-		
-		//TODO add saving method
 	}
 	
 	public boolean upgradeSkill(Skill skill, int amount) {
@@ -61,7 +61,6 @@ public class PlayerData {
 		
 		//TODO add some checkers like skilllevel == 0, permissions, Vault
 		
-		//Upgrader
 		playerPoints -= amount;
 		skills.put(skill.getName().toLowerCase(), skills.get(skill.getName().toLowerCase()) + amount);
 		
@@ -83,13 +82,22 @@ public class PlayerData {
 		return true;
 	}
 	
-	public int countPlayerPoints(Player player) {
-		//TODO countPlayerPoints
-		return 0;
+	public int getUsedPoints() {
+		int points = 0;
+		for (int skillPoints : skills.values()) {
+			points += skillPoints;
+		}
+		return points;
+	}
+	
+	public int countPlayerPoints() {
+		return (Integer)Properties.SKILLTREE_POINTS_ON_START.getValue()
+				+ hero.getLevel() * (Integer)Properties.SKILLTREE_POINTS_PER_LEVEL.getValue()
+				- getUsedPoints();
 	}
 	
 	public boolean hasSkillUnlocked(Skill skill) {
-		return hasSkill(skill) && getSkillLevel(skill) > 0;
+		return hasSkill(skill) && (getSkillLevel(skill) > 0);
 	}
 	
 	public boolean hasSkill(Skill skill) {
@@ -113,6 +121,15 @@ public class PlayerData {
 		if (playerPoints < 0) {
 			playerPoints = 0;
 		}
+		new SkillPointChangeEvent(player, hClass, amount);
+	}
+	
+	public void removePoints(int amount) {
+		playerPoints -= amount;
+		if (playerPoints < 0) {
+			playerPoints = 0;
+		}
+		new SkillPointChangeEvent(player, hClass, amount);
 	}
 
 	public void setPoints(int amount) {

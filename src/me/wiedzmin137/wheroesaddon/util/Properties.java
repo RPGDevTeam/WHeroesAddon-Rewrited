@@ -2,28 +2,43 @@ package me.wiedzmin137.wheroesaddon.util;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 
-public class Properties {
-	//TODO [Bad conding detected] - I'll change it all
+public enum Properties {
+	SKILLTREE_ENABLED("SkillTree.Enabled", true),
+	SKILLTREE_POINTS_PER_LEVEL("SkillTree.PointsPerLevel", 1),
+	SKILLTREE_POINTS_ON_START("SkillTree.PointsOnStart", 3),
+	SKILLTREE_COST_UNLOCK("SkillTree.CostToUnlock", 0),
+	SKILLTREE_COST_LEVEL_UP("SkillTree.CostToLevelUp", 0),
+	SKILLTREE_COST_LEVEL_DOWN("SkillTree.CostToLevelDown", 0),
+	SKILLTREE_COST_RESET("SkillTree.CostToReset", 0),
+	MYSQL_ENABLED("MySQL.Enabled", "false"),
+	MYSQL_HOST("MySQL.Host", "localhost"),
+	MYSQL_PORT("MySQL.Port", 3306),
+	MYSQL_DATABASE("MySQL.Database", "minecraft"),
+	MYSQL_PASSWORD("MySQL.Password", "passwd");
 	
-	private WHeroesAddon plugin;
+	private String path;
+	private Object def;
+	private static YamlConfiguration PROPERTIES;
 	
-	public Properties(WHeroesAddon wHeroesAddon) {
-		YamlConfiguration yaml = wHeroesAddon.getConfigManager().getYAML();
-		this.plugin = wHeroesAddon;
-		
-		STEnabled = yaml.getBoolean("SkillTree.Enabled", true);
-		STPointsPerLevel = yaml.getInt("SkillTree.Points_Per_Level", 1);
-		STCostUnlock = yaml.getInt("SkillTree.Cost_Unlock", 0);
-		STCostLevelUP = yaml.getInt("SkillTree.Cost_Level_Up", 0);
-		STCostLevelDown = yaml.getInt("SkillTree.Cost_Level_Down", 0);
-		STCostReset = yaml.getInt("SkillTree.Cost_Reset", 0);
+	Properties(String path, Object start) {
+		this.path = path;
+		this.def = start;
 	}
-	public boolean STEnabled = true;
-	public int STPointsPerLevel = 1;
-	public int STCostUnlock = 0;;
-	public int STCostLevelUP = 0;
-	public int STCostLevelDown = 0;
-	public int STCostReset = 0;
+	
+	public Object getDefault() {
+		return this.def;
+	}
+	
+	public String getPath() {
+		return this.path;
+	}
+	
+	public Object getValue() {
+		return PROPERTIES.get(this.path, def);
+	}
+	
+	public static void setFile(YamlConfiguration config) {
+		PROPERTIES = config;
+	}
 }
