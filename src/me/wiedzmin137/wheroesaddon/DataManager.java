@@ -51,7 +51,7 @@ public class DataManager {
 			HashMap<String, Object> hm = new HashMap<String, Object>();
 			hm.put("name", playerData.getPlayer().getName());
 			hm.put("skills", playerData.getSkillPoints());
-			hm.put("player-points", playerData.getPlayerPoints());
+			hm.put("player-points", playerData.getPoints());
 			//TODO save it (find nice method to do that)
 			//sql.query("");
 		} catch (SQLException e) {

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 
 public class CommandManager implements CommandExecutor {
+	@SuppressWarnings("unused")
 	private WHeroesAddon plugin;
 	
 	public CommandManager(WHeroesAddon plugin) {
@@ -21,6 +22,8 @@ public class CommandManager implements CommandExecutor {
 				if (args.length > 0) {
 					switch (args[0]) {
 						case "Test": sender.sendMessage("It should work!"); break;
+						case "up": SkillUpCommand.skillUp((Player)sender, args); break;
+						case "down": SkillDownCommand.skillDown((Player)sender, args); break;
 						case "Choose": ChooseCommand.showClassChoose((Player)sender); break;
 						default: sender.sendMessage("[WHeroesAddon] Command not found. Use:");
 								 showInfo(sender);

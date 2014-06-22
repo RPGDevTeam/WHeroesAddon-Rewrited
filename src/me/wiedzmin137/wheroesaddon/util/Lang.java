@@ -11,13 +11,29 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public enum Lang {
 	TITLE("Title.MainTitle", "&1[&bSkillTree&1]&r"),
 	TITLE_ITEM_GUI("Title.ItemGUI", "&1[&9 %class% &1]&r"),
+	ERROR_PERMISSIONS("Error.Permissions", "&4You don\'t have enough permissions!"),
+	ERROR_NOT_IN_GAME("Error.NotInGame", "&cYou must be in game to use this command"),
+	ERROR_NOT_ENOUGH_ARGUMENTS("Error.NotEnoughArguments", "&cNot enough arguments, use: %argument%"),
 	GUI_INVAILD_SKILLS("GUI.InvaildSkills", "Skill %skill% has no valid identifiers and can not be used on the menu! Please contact the author to fix the skill."),
 	GUI_LORE("GUI.Lore", "&eClick for use!"),
 	GUI_LORE_LEVEL("GUI.LoreLevel", "&f&oSkillLevel: %level%/%maxLevel%"),
 	GUI_LORE_MANA("GUI.LoreMana", "&f&oMana: %manaCost%"),
 	GUI_TITLE_SKILL("GUI.TitleSkill", "&2&l[&r&a%skill%&2&l]"),
 	GUI_TITLE_CHOOSE("GUI.TitleChoose", "&1== &bChoose your class! &1=="),
-	SKILLTREE_GAIN("SkillTree.Gain", "You have gained %amount% skill points!");
+	SKILLTREE_GAIN("SkillTree.Gain", "You have gained %amount% skill points!"),
+	SKILLTREE_ERROR_NO_ACCESS("SkillTree.Error.NoAccess", "&4You don\'t have this skill"),
+	SKILLTREE_ERROR_TOO_LOW_LEVEL("SkillTree.Error.ToLowLevel", "&cThis skill is not a high enough level"),
+	SKILLTREE_ERROR_NOT_NUMBER("SkillTree.Error.NotNumber", "&cPlease enter a vaild number of points to increase"),
+	SKILLTREE_DOWN_LOCKED("SkillTree.Down.Locked", "You have locked %skill%!"),
+	SKILLTREE_DOWN_NORMAL("SkillTree.Down.Normal", "%skill% - leveled down: %slevel%/%slevelmax%"),
+	SKILLTREE_UP_NOT_TO_INCREASE("SkillTree.Up.NotToIncerase", "&cThis skill can\'t be increased"),
+	SKILLTREE_UP_NOT_ENOUGH_SKILLPOINTS("SkillTree.up.NotEnoughSkillPoints", "&cYou don\'t have enough SkillPoints."),
+	SKILLTREE_UP_ALREADY_MASTERED("SkillTree.Up.AlreadyMastered", "&cThis skill has already been mastered."),
+	SKILLTREE_UP_UNLOCK_CANNOT("SkillTree.Up.CannotUnlock", "You can\'t unlock this skill!"),
+	SKILLTREE_UP_UNLOCK_SUCCESS("SkillTree.Up.UnlockSuccess", "You have unlocked %skill%! Level: %level%"),
+	SKILLTREE_UP_MASTERED("SkillTree.Up.Mastered", "You have mastered %skill% at level %level%!"),
+	SKILLTREE_UP_LEVELED("SkillTree.Up.Leveled", "%skill% leveled up: %slevel/%slevelmax%");
+	
 	
 	private String path;
 	private String def;

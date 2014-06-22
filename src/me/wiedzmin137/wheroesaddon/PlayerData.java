@@ -76,11 +76,17 @@ public class PlayerData {
 		//TODO add some checkers
 		
 		playerPoints += amount;
-		skills.put(skill.getName().toLowerCase(), skills.get(skill.getName().toLowerCase()) - amount);
+		skills.put(skill.getName(), skills.get(skill.getName()) - amount);
 		
 		plugin.getServer().getPluginManager().callEvent(
 				new SkillPointChangeEvent(player, hClass, amount));
 		return true;
+	}
+	
+	public void setSkillLevel(Skill skill, int amount) {
+		if (!hero.canUseSkill(skill) || !isLocked(skill)) return;
+		if (amount < 0) amount = 0;
+		skills.put(skill.getName(), amount);
 	}
 	
 	public int getUsedPoints() {
@@ -116,6 +122,39 @@ public class PlayerData {
 		} else {
 			return true;
 		}
+	}
+	
+	public boolean isMastered(Skill skill) {
+		return hero.hasAccessToSkill(skill) ? (getSkillLevel(skill) >= getMaxLevel(skill)) : false;
+	}
+	
+	public boolean canUnlock(Skill skill) {
+		if (!hero.hasAccessToSkill(skill) || !hero.canUseSkill(skill)) {
+			return false;
+		}
+		SkillTree st = WHeroesAddon.getInstance().getSkillTree(hClass);
+		
+		boolean hasStrongParents = (st.getStrongParentSkills(skill) != null) && (!st.getStrongParentSkills(skill).isEmpty());
+		boolean hasWeakParents = (st.getWeakParentSkills(skill) != null) && (!st.getWeakParentSkills(skill).isEmpty());
+		if (!hasStrongParents && !hasWeakParents) {
+			return true;
+		}
+		if (hasStrongParents) {
+			for (String name : st.getStrongParentSkills(skill)) {
+				if (!isMastered(WHeroesAddon.heroes.getSkillManager().getSkill(name))) {
+					return false;
+				}
+			}
+		}
+		if (hasWeakParents) {
+			for (String name : st.getWeakParentSkills(skill)) {
+				if (isMastered(WHeroesAddon.heroes.getSkillManager().getSkill(name))) {
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
 	}
 	
 	public int getSkillLevel(Skill skill) {
@@ -154,6 +193,6 @@ public class PlayerData {
 	}
 	
 	public Player getPlayer() { return player; }
-	public int getPlayerPoints() { return playerPoints; }
+	public int getPoints() { return playerPoints; }
 	public HashMap<String, Integer> getSkillPoints() { return skills; }
 }

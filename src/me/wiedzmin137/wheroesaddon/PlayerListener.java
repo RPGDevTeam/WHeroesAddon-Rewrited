@@ -1,6 +1,5 @@
 package me.wiedzmin137.wheroesaddon;
 
-import me.wiedzmin137.wheroesaddon.util.Lang;
 import me.wiedzmin137.wheroesaddon.util.Properties;
 import me.wiedzmin137.wheroesaddon.util.SkillPointChangeEvent;
 
@@ -53,17 +52,16 @@ public class PlayerListener implements Listener {
 		final Hero hero = event.getHero();
 		PlayerData pd = p.getPlayerData(event.getHero().getPlayer());
 		int amount = (event.getTo() - event.getFrom()) * (int)Properties.SKILLTREE_POINTS_PER_LEVEL.getValue();
-		pd.setPoints(amount + pd.getPlayerPoints());
+		pd.setPoints(amount + pd.getPoints());
 		if (hero.getHeroClass() != event.getHeroClass()) {
 			return;
 		}
-		new SkillPointChangeEvent(hero.getPlayer(), hero.getHeroClass(), amount - pd.getPlayerPoints());
+		new SkillPointChangeEvent(hero.getPlayer(), hero.getHeroClass(), amount - pd.getPoints());
 	}
 	
 	@EventHandler
 	public void onPointGain(SkillPointChangeEvent event) {
-		p.getDatabaseManager().savePlayer(WHeroesAddon.getInstance().getPlayerData(event.getPlayer()));
-		event.getPlayer().sendMessage(Lang.SKILLTREE_GAIN.toString().replace("%amount%", String.valueOf(WHeroesAddon.getInstance().getPlayerData(event.getPlayer()).getPlayerPoints())));
+		p.getDatabaseManager().savePlayer(p.getPlayerData(event.getPlayer()));
 	}
 	
 	@EventHandler
