@@ -13,7 +13,6 @@ import me.wiedzmin137.wheroesaddon.util.Properties;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.herocraftonline.heroes.Heroes;
@@ -28,7 +27,6 @@ public class WHeroesAddon extends JavaPlugin {
 	
 	private Config config;
 	private Config lang;
-	private Config prop;
 	
 	private CommandManager commandManager;
 	private Properties properties;
@@ -41,10 +39,16 @@ public class WHeroesAddon extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		heroes = (Heroes) Bukkit.getServer().getPluginManager().getPlugin("Heroes");
+		sms = (ScrollingMenuSign) getServer().getPluginManager().getPlugin("ScrollingMenuSign");
 		
 		//Check is Heroes exists
 		if (heroes == null) {
 			LOG.warning("[WHeroesAddon] Requires Heroes to run for now, please download it");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		if (sms == null) {
+			LOG.warning("[WHeroesAddon] Requires ScrollingMenuSign to run for now, please download it");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -65,29 +69,32 @@ public class WHeroesAddon extends JavaPlugin {
 		
 		//Create SkillTrees for all HeroClass
 		for (HeroClass hClass : heroes.getClassManager().getClasses()) {
-			SkillTree st = new SkillTree(this, hClass, sms);
+			SkillTree st = new SkillTree(this, hClass);
 			skillTrees.put(hClass, st);
 		}
 		
 		//Set "skilltree" command Executor in CommandManager
 		getCommand("skilltree").setExecutor(new CommandManager(this));
 		
+		getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+		
 		dataManager = new DataManager(this);
 		dataManager.setDatabase((boolean)Properties.MYSQL_ENABLED.getValue());
 		
 		//Create data for all exists players (if you reload plugin by PlugMan)
 		for (Player player : getServer().getOnlinePlayers()) {
-			PlayerData pd = new PlayerData(this, player);
-			pData.put(player, pd);
+//			try {
+//				getPlayerData(player);
+//			} catch (NullPointerException e) {
+				PlayerData pd = new PlayerData(this, player);
+				//dataManager.loadPlayer(player);
+				pd.setPoints(0);
+				dataManager.savePlayer(pd);
+				pData.put(player, pd);	
+				LOG.info("Loaded");
+//			}
 		}
-		
-		//Check if ScrollingMenuSign exists and allow CommandManager handle SkillTree GUI commands
-		Plugin p = getServer().getPluginManager().getPlugin("ScrollingMenuSign");
-		if (p instanceof ScrollingMenuSign && p.isEnabled()) {
-			sms = (ScrollingMenuSign) p;
-			LOG.info("[WHeroesAddon] ScrollingMenuSign integration is enabled; menus created");
-		} else {/*Plugin is not available*/}
-		
+
 		LOG.info("[WHeroesAddon] vA0.2 has been enabled!");
 	}
 
@@ -121,30 +128,18 @@ public class WHeroesAddon extends JavaPlugin {
 		}
 		
 		//Load Properties
-		YamlConfiguration prop = getPropertiesMagager().getYAML();
-		for (Properties item : Properties.values()) {
-			if (prop.getString(item.getPath()) == null) {
-				prop.set(item.getPath(), item.getDefault());
-			}
-		}
-		Properties.setFile(prop);
-		try {
-			prop.save(getPropertiesMagager().getFile());
-		} catch (IOException e) {
-			LOG.warning("[WHeroesAddon] Failed to save lang.yml.");
-			LOG.warning("[WHeroesAddon] Report this stack trace to Wiedzmin137.");
-			e.printStackTrace();
-		}
+		Properties.setFile(getConfigManager().getYAML());
 	}
 	
 	public Config getConfigManager() { return config; }
 	public Config getLangManager() { return lang; }
-	public Config getPropertiesMagager() { return prop; }
 	public CommandManager getCommandManager() { return commandManager; }
 	public Properties getProperties() { return properties; }
 	public SkillTree getSkillTree(HeroClass hc) { return skillTrees.get(hc); }
 	public PlayerData getPlayerData(Player player) { return pData.get(player); }
 	public DataManager getDatabaseManager() { return dataManager; }
+	protected void setPlayerData(Player player, PlayerData pd) { pData.put(player, pd); return; }
 	
 	public static WHeroesAddon getInstance() { return instance; }
+	
 }

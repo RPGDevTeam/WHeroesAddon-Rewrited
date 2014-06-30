@@ -18,11 +18,12 @@ public enum Properties {
 	SKILLTREE_COST_LEVEL_UP("SkillTree.CostToLevelUp", 0),
 	SKILLTREE_COST_LEVEL_DOWN("SkillTree.CostToLevelDown", 0),
 	SKILLTREE_COST_RESET("SkillTree.CostToReset", 0),
-	MYSQL_ENABLED("MySQL.Enabled", "false"),
+	MYSQL_ENABLED("MySQL.Enabled", false),
 	MYSQL_HOST("MySQL.Host", "localhost"),
 	MYSQL_PORT("MySQL.Port", 3306),
 	MYSQL_DATABASE("MySQL.Database", "minecraft"),
-	MYSQL_PASSWORD("MySQL.Password", "passwd");
+	MYSQL_PASSWORD("MySQL.Password", "passwd"),
+	ST_ITEM("ST_ITEM", new String[] {"{description}", "", "{requirements}", "{heroclass}", "{values}"});
 	
 	private String path;
 	private Object def;

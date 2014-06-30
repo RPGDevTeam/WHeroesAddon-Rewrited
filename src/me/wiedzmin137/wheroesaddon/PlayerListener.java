@@ -5,9 +5,11 @@ import me.wiedzmin137.wheroesaddon.util.SkillPointChangeEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.herocraftonline.heroes.api.events.ClassChangeEvent;
 import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
@@ -24,25 +26,32 @@ public class PlayerListener implements Listener {
 		this.p = plugin;
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGH)
 	public void onPlayerJoin(final PlayerJoinEvent event) {
-		p.getDatabaseManager().loadPlayer(event.getPlayer());
-		
-		final Hero hero = WHeroesAddon.heroes.getCharacterManager().getHero(event.getPlayer());
-		Bukkit.getScheduler().scheduleSyncDelayedTask(p, new Runnable() {
+		new BukkitRunnable() {
+			
+			@Override
 			public void run() {
-				for (Effect effect : hero.getEffects()) {
-					Skill skill = WHeroesAddon.heroes.getSkillManager().getSkill(effect.getName());
-					if (skill != null) {
-						if (WHeroesAddon.getInstance().getPlayerData(event.getPlayer()).isLocked(skill))
-							hero.removeEffect(effect);
+				p.getDatabaseManager().loadPlayer(event.getPlayer());
+				
+				final Hero hero = WHeroesAddon.heroes.getCharacterManager().getHero(event.getPlayer());
+				Bukkit.getScheduler().scheduleSyncDelayedTask(p, new Runnable() {
+					public void run() {
+						for (Effect effect : hero.getEffects()) {
+							Skill skill = WHeroesAddon.heroes.getSkillManager().getSkill(effect.getName());
+							if (skill != null) {
+								if (WHeroesAddon.getInstance().getPlayerData(event.getPlayer()).isLocked(skill))
+									hero.removeEffect(effect);
+							}
+						}
 					}
-				}
+				 }, 1L);
 			}
-		 }, 1L);
+ 
+		}.runTaskLater(p, 5);
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onPlayerLeave(PlayerQuitEvent event) {
 		p.getDatabaseManager().savePlayer(p.getPlayerData(event.getPlayer()));
 	}

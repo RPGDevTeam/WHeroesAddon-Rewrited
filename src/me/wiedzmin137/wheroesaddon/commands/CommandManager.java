@@ -5,10 +5,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.wiedzmin137.wheroesaddon.PlayerData;
 import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 
 public class CommandManager implements CommandExecutor {
-	@SuppressWarnings("unused")
 	private WHeroesAddon plugin;
 	
 	public CommandManager(WHeroesAddon plugin) {
@@ -17,23 +17,22 @@ public class CommandManager implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (sender instanceof Player) {
-			if (cmd.getName().equalsIgnoreCase("skilltree")) {
-				if (args.length > 0) {
-					switch (args[0]) {
-						case "Test": sender.sendMessage("It should work!"); break;
-						case "up": SkillUpCommand.skillUp((Player)sender, args); break;
-						case "down": SkillDownCommand.skillDown((Player)sender, args); break;
-						case "Choose": ChooseCommand.showClassChoose((Player)sender); break;
-						default: sender.sendMessage("[WHeroesAddon] Command not found. Use:");
-								 showInfo(sender);
-					}
+		if (cmd.getName().equalsIgnoreCase("skilltree")) {
+			if (args.length > 0) {
+				switch (args[0]) {
+					case "up": SkillUpCommand.skillUp((Player)sender, args); break;
+					case "down": SkillDownCommand.skillDown((Player)sender, args); break;
+					case "showpd": sender.sendMessage("" + plugin.getPlayerData((Player)sender).getPoints());
+								   sender.sendMessage(plugin.getPlayerData((Player)sender).getSkillsPoints().toString()); break;
+					case "pp": sender.sendMessage(String.valueOf(plugin.getPlayerData((Player)sender).getPoints()));
+					case "save": plugin.getDatabaseManager().savePlayer(plugin.getPlayerData((Player)sender));
+					case "recreate": new PlayerData(WHeroesAddon.getInstance(), (Player)sender);
+					case "choose": ChooseCommand.showClassChoose((Player)sender); break;
+					default: sender.sendMessage("[WHeroesAddon] Command not found. Use:");
+						showInfo(sender);
 				}
-			} else {
-				showInfo(sender);
 			}
-		} else {
-			WHeroesAddon.LOG.info("[WHeroesAddon] Console senders are not support for now!");
+			return true;
 		}
 		return false;
 	}

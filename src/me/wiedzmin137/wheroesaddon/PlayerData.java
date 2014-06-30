@@ -20,7 +20,7 @@ import com.herocraftonline.heroes.characters.skill.Skill;
  *
  */
 public class PlayerData {
-	private WHeroesAddon plugin;
+	private WHeroesAddon p;
 	
 	private Player player;
 	private Hero hero;
@@ -32,23 +32,25 @@ public class PlayerData {
 	
 	//Creating instace of PlayerData for proper Player count PlayerPoints
 	public PlayerData(WHeroesAddon plugin, Player player) {
-		this.plugin = plugin;
+		this.p = plugin;
+		this.player = player;
 		this.hero = WHeroesAddon.heroes.getCharacterManager().getHero(player);
 		this.hClass = hero.getHeroClass();
 		
 		for (String s : hClass.getSkillNames()) {
 			if (skills.get(s) == null) {
-				skills.put(s.toLowerCase(), 1);
+				skills.put(s.toLowerCase(), (hero.hasAccessToSkill(s) ? 1 : 0));
 			}
 		}
 		
 		if (Integer.valueOf(playerPoints) == null) {
 			playerPoints = countPlayerPoints();
 		}
+		
+		p.setPlayerData(player, this);
 	}
 	
 	public boolean upgradeSkill(Skill skill, int amount) {
-		Hero hero = WHeroesAddon.heroes.getCharacterManager().getHero(player);
 		if (!hero.canUseSkill(skill)) 
 			return false;
 		
@@ -65,7 +67,7 @@ public class PlayerData {
 		playerPoints -= amount;
 		skills.put(skill.getName().toLowerCase(), skills.get(skill.getName().toLowerCase()) + amount);
 		
-		plugin.getServer().getPluginManager().callEvent(
+		p.getServer().getPluginManager().callEvent(
 				new SkillPointChangeEvent(player, hClass, amount));
 		return true;
 	}
@@ -78,7 +80,7 @@ public class PlayerData {
 		playerPoints += amount;
 		skills.put(skill.getName(), skills.get(skill.getName()) - amount);
 		
-		plugin.getServer().getPluginManager().callEvent(
+		p.getServer().getPluginManager().callEvent(
 				new SkillPointChangeEvent(player, hClass, amount));
 		return true;
 	}
@@ -113,9 +115,9 @@ public class PlayerData {
 	
 	public boolean isLocked(Skill skill) {
 		if (skill != null && hero.canUseSkill(skill)) {
-			List<String> strongParents = WHeroesAddon.getInstance().getSkillTree(hero.getHeroClass()).getStrongParentSkills(skill);
-			List<String> weakParents = WHeroesAddon.getInstance().getSkillTree(hero.getHeroClass()).getWeakParentSkills(skill);
-			boolean skillLevel = WHeroesAddon.getInstance().getPlayerData(hero.getPlayer()).getSkillLevel(skill) < 1;
+			List<Skill> strongParents = p.getSkillTree(hero.getHeroClass()).getStrongParentSkills(skill);
+			List<Skill> weakParents = p.getSkillTree(hero.getHeroClass()).getWeakParentSkills(skill);
+			boolean skillLevel = p.getPlayerData(hero.getPlayer()).getSkillLevel(skill) < 1;
 			boolean hasStrongParents = strongParents != null && !strongParents.isEmpty();
 			boolean hasWeakParents = weakParents != null && !weakParents.isEmpty();
 			return skillLevel && hasStrongParents || hasWeakParents;
@@ -132,7 +134,7 @@ public class PlayerData {
 		if (!hero.hasAccessToSkill(skill) || !hero.canUseSkill(skill)) {
 			return false;
 		}
-		SkillTree st = WHeroesAddon.getInstance().getSkillTree(hClass);
+		SkillTree st = p.getSkillTree(hClass);
 		
 		boolean hasStrongParents = (st.getStrongParentSkills(skill) != null) && (!st.getStrongParentSkills(skill).isEmpty());
 		boolean hasWeakParents = (st.getWeakParentSkills(skill) != null) && (!st.getWeakParentSkills(skill).isEmpty());
@@ -140,15 +142,15 @@ public class PlayerData {
 			return true;
 		}
 		if (hasStrongParents) {
-			for (String name : st.getStrongParentSkills(skill)) {
-				if (!isMastered(WHeroesAddon.heroes.getSkillManager().getSkill(name))) {
+			for (Skill name : st.getStrongParentSkills(skill)) {
+				if (!isMastered(name)) {
 					return false;
 				}
 			}
 		}
 		if (hasWeakParents) {
-			for (String name : st.getWeakParentSkills(skill)) {
-				if (isMastered(WHeroesAddon.heroes.getSkillManager().getSkill(name))) {
+			for (Skill name : st.getWeakParentSkills(skill)) {
+				if (isMastered(name)) {
 					return true;
 				}
 			}
@@ -166,7 +168,7 @@ public class PlayerData {
 	}
 	
 	public int getMaxLevel(Skill skill) {
-		return plugin.getSkillTree(hClass).getMaxLevel(skill);
+		return p.getSkillTree(hClass).getMaxLevel(skill);
 	}
 	
 	public void givePoints(int amount) {
@@ -194,5 +196,5 @@ public class PlayerData {
 	
 	public Player getPlayer() { return player; }
 	public int getPoints() { return playerPoints; }
-	public HashMap<String, Integer> getSkillPoints() { return skills; }
+	public HashMap<String, Integer> getSkillsPoints() { return skills; }
 }

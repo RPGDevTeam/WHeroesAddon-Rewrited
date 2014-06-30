@@ -1,5 +1,6 @@
 package me.wiedzmin137.wheroesaddon.util;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -27,12 +28,12 @@ public enum Lang {
 	SKILLTREE_DOWN_LOCKED("SkillTree.Down.Locked", "You have locked %skill%!"),
 	SKILLTREE_DOWN_NORMAL("SkillTree.Down.Normal", "%skill% - leveled down: %slevel%/%slevelmax%"),
 	SKILLTREE_UP_NOT_TO_INCREASE("SkillTree.Up.NotToIncerase", "&cThis skill can\'t be increased"),
-	SKILLTREE_UP_NOT_ENOUGH_SKILLPOINTS("SkillTree.up.NotEnoughSkillPoints", "&cYou don\'t have enough SkillPoints."),
+	SKILLTREE_UP_NOT_ENOUGH_SKILLPOINTS("SkillTree.Up.NotEnoughSkillPoints", "&cYou don\'t have enough SkillPoints."),
 	SKILLTREE_UP_ALREADY_MASTERED("SkillTree.Up.AlreadyMastered", "&cThis skill has already been mastered."),
 	SKILLTREE_UP_UNLOCK_CANNOT("SkillTree.Up.CannotUnlock", "You can\'t unlock this skill!"),
 	SKILLTREE_UP_UNLOCK_SUCCESS("SkillTree.Up.UnlockSuccess", "You have unlocked %skill%! Level: %level%"),
 	SKILLTREE_UP_MASTERED("SkillTree.Up.Mastered", "You have mastered %skill% at level %level%!"),
-	SKILLTREE_UP_LEVELED("SkillTree.Up.Leveled", "%skill% leveled up: %slevel/%slevelmax%");
+	SKILLTREE_UP_LEVELED("SkillTree.Up.Leveled", "%skill% leveled up: %slevel%/%slevelmax%");
 	
 	
 	private String path;
@@ -60,8 +61,8 @@ public enum Lang {
 	@Override
 	public String toString() {
 		if (this == TITLE)
-			return ChatColor.translateAlternateColorCodes('&', LANG.getString(this.path, def)) + " ";
-		return ChatColor.translateAlternateColorCodes('&', LANG.getString(this.path, def));
+			return StringEscapeUtils.unescapeHtml(ChatColor.translateAlternateColorCodes('&', LANG.getString(this.path, def))) + " ";
+		return StringEscapeUtils.unescapeHtml(ChatColor.translateAlternateColorCodes('&', LANG.getString(this.path, def)));
 	}
 	
 	/**

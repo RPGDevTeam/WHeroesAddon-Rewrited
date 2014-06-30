@@ -18,7 +18,6 @@ public class Config {
 		this.fileName = fileName;
 		this.dataFolder = plugin.getDataFolder();
 		this.file = new File(dataFolder, fileName);
-		WHeroesAddon.LOG.info(file.toString());
 		
 		if (!dataFolder.exists()) {
 			dataFolder.mkdir();

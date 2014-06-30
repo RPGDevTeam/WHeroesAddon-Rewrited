@@ -2,7 +2,9 @@ package me.wiedzmin137.wheroesaddon;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import lib.PatPeter.SQLibrary.Database;
 import lib.PatPeter.SQLibrary.MySQL;
@@ -24,7 +26,7 @@ public class DataManager {
 			sql = new SQLite(WHeroesAddon.LOG, 
 				"WHeroesAddon ", 
 				WHeroesAddon.getInstance().getDataFolder().getAbsolutePath(), 
-				"Database");
+				"Database", ".sqlite");
 		} else {
 			sql = new MySQL(WHeroesAddon.LOG, 
 				"WHeroesAddon ", 
@@ -37,7 +39,7 @@ public class DataManager {
 	}
 	
 	public void savePlayer(PlayerData playerData) {
-		if (!sql.isOpen()) sql.open();
+		if (sql instanceof SQLite ? !sql.open() : !sql.isOpen() && !sql.open());
 		try {
 			sql.query("CREATE TABLE IF NOT EXISTS WADDON ("
 					+ " `name` VARCHAR(16) NOT NULL,"
@@ -50,10 +52,48 @@ public class DataManager {
 			//TODO Get PlayerData and save it!
 			HashMap<String, Object> hm = new HashMap<String, Object>();
 			hm.put("name", playerData.getPlayer().getName());
-			hm.put("skills", playerData.getSkillPoints());
+			//hm.put("skills", playerData.getSkillsPoints());
 			hm.put("player-points", playerData.getPoints());
-			//TODO save it (find nice method to do that)
-			//sql.query("");
+			
+			String[] aKeys = hm.keySet().toArray(new String[hm.keySet().size()]);
+			List<String> keys = Arrays.asList("name");
+			String code = "";
+			if (sql.query("SELECT `name` FROM WADDON WHERE name='" + playerData.getPlayer().getName() + "'") == null) {
+				code = "INSERT INTO WADDON ";
+				String keycode = "(";
+				String valuecode = " VALUES (";
+				for (int count = 0; count < hm.size(); count++) {
+					keycode += "`" + aKeys[count] + "`";
+					valuecode += "?";
+					if ((count < (hm.size() - 1))) {
+						keycode += ", ";
+						valuecode += ",";
+					} else {
+						keycode += ")";
+						valuecode += ")";
+					}
+				}
+				code += keycode;
+				code += valuecode;
+				WHeroesAddon.LOG.info("SQL save: 1");
+			} else {
+				code = "UPDATE WADDON SET ";
+				for (int count = 0; count < hm.size(); count++) {
+					code += "`" + aKeys[count] + "` = ?";
+					if ((count < (hm.size() - 1))) {
+						code += ",";
+					}
+				}
+				code += " WHERE ";
+				for (int count = 0; count < keys.size(); count++) {
+					code += "`" + keys.get(count) + "` = ?";
+					if ((count < (keys.size() - 1))) {
+						code += " AND ";
+					}
+				}
+				WHeroesAddon.LOG.info("SQL save: 2");
+			}
+			sql.query(code);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -62,14 +102,17 @@ public class DataManager {
 	}
 	
 	public PlayerData loadPlayer(Player player) {
-		if (!sql.isOpen()) sql.open();
+		if (sql instanceof SQLite ? !sql.open() : !sql.isOpen() && !sql.open());
 		ResultSet rs;
 		PlayerData pd;
 		try {
 			rs = sql.query("SELECT * FROM WADDON WHERE name='" + player.getName() + "'");
 			
 			pd = new PlayerData(plugin, player);
-			pd.setPoints(rs.getInt("player-point"));
+			if (Integer.valueOf(rs.getInt("player-points")) == null) {
+				pd.setPoints(0);
+			}
+
 			//TODO load HashMap<String, Integer> with skills levels
 			pd.countPlayerPoints();
 		} catch (SQLException e) {
@@ -77,6 +120,7 @@ public class DataManager {
 			return null;
 		}
 		sql.close();
+		WHeroesAddon.LOG.info("Loaded PD");
 		return pd;
 	}
 	

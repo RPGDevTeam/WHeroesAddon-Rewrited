@@ -23,6 +23,10 @@ public class SkillPointChangeEvent extends Event {
 	public HandlerList getHandlers() {
 		return handlers;
 	}
+ 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
 
 	public Player getPlayer() {
 		return player;
