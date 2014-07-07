@@ -2,9 +2,8 @@ package me.wiedzmin137.wheroesaddon;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 import lib.PatPeter.SQLibrary.Database;
 import lib.PatPeter.SQLibrary.MySQL;
@@ -36,84 +35,84 @@ public class DataManager {
 				String.valueOf(Properties.MYSQL_DATABASE.getValue()), 
 				String.valueOf(Properties.MYSQL_PASSWORD.getValue()));
 		}
+		checkTables();
+		sql.open();
+	}
+	
+	public void checkTables() {
+		if (sql instanceof SQLite ? !sql.open() : !sql.isOpen() && !sql.open());
+		try {
+			sql.query("CREATE TABLE IF NOT EXISTS playerdata ("
+					+ "`name` VARCHAR(16) NOT NULL,"
+					+ "`playerpoints` INT NOT NULL,"
+					+ "PRIMARY KEY (`name`)"
+					+ ")");
+			
+			sql.query("CREATE TABLE IF NOT EXISTS skills ("
+					+ "`name` VARCHAR(16) NOT NULL,"
+					+ "`skill` VARCHAR(16) NOT NULL,"
+					+ "`level` INT NOT NULL,"
+					+ "PRIMARY KEY (`name`)"
+					+ ")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void savePlayer(PlayerData playerData) {
 		if (sql instanceof SQLite ? !sql.open() : !sql.isOpen() && !sql.open());
 		try {
-			sql.query("CREATE TABLE IF NOT EXISTS WADDON ("
-					+ " `name` VARCHAR(16) NOT NULL,"
-					+ "`player-points` INT NOT NULL,"
-					//+ "`skills` (Whatever) NOT NULL,"
-					//TODO add string to store HashMap<String, Integer>
-					+ "PRIMARY KEY (`name`)"
-					+ ")");
-			
-			//TODO Get PlayerData and save it!
-			HashMap<String, Object> hm = new HashMap<String, Object>();
-			hm.put("name", playerData.getPlayer().getName());
-			//hm.put("skills", playerData.getSkillsPoints());
-			hm.put("player-points", playerData.getPoints());
-			
-			String[] aKeys = hm.keySet().toArray(new String[hm.keySet().size()]);
-			List<String> keys = Arrays.asList("name");
-			String code = "";
-			if (sql.query("SELECT `name` FROM WADDON WHERE name='" + playerData.getPlayer().getName() + "'") == null) {
-				code = "INSERT INTO WADDON ";
-				String keycode = "(";
-				String valuecode = " VALUES (";
-				for (int count = 0; count < hm.size(); count++) {
-					keycode += "`" + aKeys[count] + "`";
-					valuecode += "?";
-					if ((count < (hm.size() - 1))) {
-						keycode += ", ";
-						valuecode += ",";
-					} else {
-						keycode += ")";
-						valuecode += ")";
-					}
-				}
-				code += keycode;
-				code += valuecode;
-				WHeroesAddon.LOG.info("SQL save: 1");
-			} else {
-				code = "UPDATE WADDON SET ";
-				for (int count = 0; count < hm.size(); count++) {
-					code += "`" + aKeys[count] + "` = ?";
-					if ((count < (hm.size() - 1))) {
-						code += ",";
-					}
-				}
-				code += " WHERE ";
-				for (int count = 0; count < keys.size(); count++) {
-					code += "`" + keys.get(count) + "` = ?";
-					if ((count < (keys.size() - 1))) {
-						code += " AND ";
-					}
-				}
-				WHeroesAddon.LOG.info("SQL save: 2");
+			ResultSet r;
+			for (final Map.Entry<String, Integer> entry : playerData.getSkillsPoints().entrySet()) {
+				String sqlS = "REPLACE INTO skills ("
+						+ "name,skill,level"
+						+ ") values(\""
+						+ playerData.getPlayer().getName().toLowerCase() + "\",\""
+						+ entry.getKey() + "\",\""
+						+ entry.getValue()
+						+ "\");";
+				r = sql.query(sqlS);
+				r.close();
 			}
-			sql.query(code);
+			
+			String sqlS = "REPLACE INTO playerdata ("
+					+ "name,playerpoints"
+					+ ") values(\""
+					+ playerData.getPlayer().getName().toLowerCase() + "\",\""
+					+ playerData.getPoints() 
+					+ "\");";
+			r = sql.query(sqlS);
+			r.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		WHeroesAddon.LOG.info("[WHeroesAddon] Saved player: " + playerData.getPlayer());
 		sql.close();
 		return;
 	}
 	
 	public PlayerData loadPlayer(Player player) {
 		if (sql instanceof SQLite ? !sql.open() : !sql.isOpen() && !sql.open());
-		ResultSet rs;
-		PlayerData pd;
+		PlayerData pd = new PlayerData(plugin, player);
 		try {
-			rs = sql.query("SELECT * FROM WADDON WHERE name='" + player.getName() + "'");
-			
-			pd = new PlayerData(plugin, player);
-			if (Integer.valueOf(rs.getInt("player-points")) == null) {
-				pd.setPoints(0);
+			ResultSet rs = sql.query("SELECT playerpoints FROM playerdata WHERE name='" + player.getName().toLowerCase() + "';");
+			if (rs != null) {
+				while (rs.next()) {
+					pd.setPoints(rs.getInt("playerpoints"));
+					pd.setPlayer(player);
+				}
 			}
 
-			//TODO load HashMap<String, Integer> with skills levels
+			rs = sql.query("SELECT skill, level FROM skills WHERE name='" + player.getName().toLowerCase() + "';");
+			if (rs != null) {
+				while (rs.next()) {
+					HashMap<String, Integer> skills = new HashMap<String, Integer>();
+					skills.put(rs.getString("skill"), rs.getInt("level"));
+					
+					pd.setSkillPoints(skills);
+				}
+			}
 			pd.countPlayerPoints();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -121,6 +120,7 @@ public class DataManager {
 		}
 		sql.close();
 		WHeroesAddon.LOG.info("Loaded PD");
+		savePlayer(pd);
 		return pd;
 	}
 	

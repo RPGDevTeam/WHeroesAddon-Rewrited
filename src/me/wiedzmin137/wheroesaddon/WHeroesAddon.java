@@ -82,18 +82,16 @@ public class WHeroesAddon extends JavaPlugin {
 		dataManager.setDatabase((boolean)Properties.MYSQL_ENABLED.getValue());
 		
 		//Create data for all exists players (if you reload plugin by PlugMan)
-		for (Player player : getServer().getOnlinePlayers()) {
+		//FIXME Bugged
+//		for (Player player : getServer().getOnlinePlayers()) {
 //			try {
 //				getPlayerData(player);
 //			} catch (NullPointerException e) {
-				PlayerData pd = new PlayerData(this, player);
-				//dataManager.loadPlayer(player);
-				pd.setPoints(0);
-				dataManager.savePlayer(pd);
-				pData.put(player, pd);	
-				LOG.info("Loaded");
+//				dataManager.loadPlayer(player);
+//				dataManager.savePlayer(pData.get(player));
+//				LOG.info("Loaded by main class");
 //			}
-		}
+//		}
 
 		LOG.info("[WHeroesAddon] vA0.2 has been enabled!");
 	}

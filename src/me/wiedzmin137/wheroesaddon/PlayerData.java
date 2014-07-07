@@ -48,22 +48,13 @@ public class PlayerData {
 		}
 		
 		p.setPlayerData(player, this);
+		p.getDatabaseManager().savePlayer(this);
 	}
 	
 	public boolean upgradeSkill(Skill skill, int amount) {
 		if (!hero.canUseSkill(skill)) 
 			return false;
-		
-		if (amount > playerPoints)
-			return false;
-		
-		int level = getSkillLevel(skill);
-		
-		if (level >= getMaxLevel(skill))
-			return false;
-		
-		//TODO add some checkers like skilllevel == 0, permissions, Vault
-		
+
 		playerPoints -= amount;
 		skills.put(skill.getName().toLowerCase(), skills.get(skill.getName().toLowerCase()) + amount);
 		
@@ -74,8 +65,6 @@ public class PlayerData {
 	
 	public boolean downgradeSkill(Skill skill, int amount) {
 		if (skills.get(skill.getName().toLowerCase()) > 0) return false;
-		
-		//TODO add some checkers
 		
 		playerPoints += amount;
 		skills.put(skill.getName(), skills.get(skill.getName()) - amount);
@@ -197,4 +186,6 @@ public class PlayerData {
 	public Player getPlayer() { return player; }
 	public int getPoints() { return playerPoints; }
 	public HashMap<String, Integer> getSkillsPoints() { return skills; }
+	protected void setPlayer(Player player) { this.player = player; }
+	protected void setSkillPoints(HashMap<String, Integer> skills) { this.skills = skills; }
 }

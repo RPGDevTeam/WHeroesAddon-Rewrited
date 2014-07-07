@@ -36,6 +36,7 @@ public class PlayerListener implements Listener {
 				
 				final Hero hero = WHeroesAddon.heroes.getCharacterManager().getHero(event.getPlayer());
 				Bukkit.getScheduler().scheduleSyncDelayedTask(p, new Runnable() {
+					@Override
 					public void run() {
 						for (Effect effect : hero.getEffects()) {
 							Skill skill = WHeroesAddon.heroes.getSkillManager().getSkill(effect.getName());
@@ -54,6 +55,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onPlayerLeave(PlayerQuitEvent event) {
 		p.getDatabaseManager().savePlayer(p.getPlayerData(event.getPlayer()));
+		p.setPlayerData(event.getPlayer(), null);
 	}
 	
 	@EventHandler
