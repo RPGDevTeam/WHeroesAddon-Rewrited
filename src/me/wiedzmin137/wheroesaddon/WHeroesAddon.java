@@ -65,7 +65,8 @@ public class WHeroesAddon extends JavaPlugin {
 		loadProperties();
 		
 		//Initialize CommandManager for handling commands
-		commandManager = new CommandManager(this);
+		commandManager = new CommandManager();
+		getCommand("skilltree").setExecutor(commandManager);
 		
 		//Create SkillTrees for all HeroClass
 		for (HeroClass hClass : heroes.getClassManager().getClasses()) {
@@ -73,26 +74,9 @@ public class WHeroesAddon extends JavaPlugin {
 			skillTrees.put(hClass, st);
 		}
 		
-		//Set "skilltree" command Executor in CommandManager
-		getCommand("skilltree").setExecutor(new CommandManager(this));
-		
 		getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 		
 		dataManager = new DataManager(this);
-		dataManager.setDatabase((boolean)Properties.MYSQL_ENABLED.getValue());
-		
-		//Create data for all exists players (if you reload plugin by PlugMan)
-		//FIXME Bugged
-//		for (Player player : getServer().getOnlinePlayers()) {
-//			try {
-//				getPlayerData(player);
-//			} catch (NullPointerException e) {
-//				dataManager.loadPlayer(player);
-//				dataManager.savePlayer(pData.get(player));
-//				LOG.info("Loaded by main class");
-//			}
-//		}
-
 		LOG.info("[WHeroesAddon] vA0.2 has been enabled!");
 	}
 

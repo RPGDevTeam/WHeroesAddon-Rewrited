@@ -1,2 +1,31 @@
 Title:
   MainTitle: '&1[&bSkillTree&1]&r'
+  ItemGUI: '&1[&9 %class% &1]&r'
+Error:
+  Permissions: '&4You don''t have enough permissions!'
+  NotInGame: '&cYou must be in game to use this command'
+  NotEnoughArguments: '&cNot enough arguments, use: %argument%'
+GUI:
+  InvaildSkills: Skill %skill% has no valid identifiers and can not be used on the menu! Please contact the author to fix the skill.
+  Lore: '&eClick for use!'
+  LoreLevel: '&f&oSkillLevel: %level%/%maxLevel%'
+  LoreMana: '&f&oMana: %manaCost%'
+  TitleSkill: '&2&l[&r&a%skill%&2&l]'
+  TitleChoose: '&1== &bChoose your class! &1=='
+SkillTree:
+  Gain: You have gained %amount% skill points!
+  Error:
+    NoAccess: '&4You don''t have this skill'
+    ToLowLevel: '&cThis skill is not a high enough level'
+    NotNumber: '&cPlease enter a vaild number of points to increase'
+  Down:
+    Locked: You have locked %skill%!
+    Normal: '%skill% - leveled down: %slevel%/%slevelmax%'
+  Up:
+    NotToIncerase: '&cThis skill can''t be increased'
+    NotEnoughSkillPoints: '&cYou don''t have enough SkillPoints.'
+    AlreadyMastered: '&cThis skill has already been mastered.'
+    CannotUnlock: You can't unlock this skill!
+    UnlockSuccess: 'You have unlocked %skill%! Level: %level%'
+    Mastered: You have mastered %skill% at level %level%!
+    Leveled: '%skill% leveled up: %slevel%/%slevelmax%'

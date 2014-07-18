@@ -49,17 +49,17 @@ public class SkillUpCommand {
 						hero.addEffect(new Effect(skill, skill.getName()));
 						if (pd.isLocked(skill)) {
 							player.sendMessage(Lang.SKILLTREE_UP_UNLOCK_SUCCESS.toString()
-									.replace("%skill%", skill.getName())
-									.replace("%level%", String.valueOf(pd.getSkillLevel(skill))));
+								.replace("%skill%", skill.getName())
+								.replace("%level%", String.valueOf(pd.getSkillLevel(skill))));
 						} else if(pd.isMastered(skill)) {
 							player.sendMessage(Lang.SKILLTREE_UP_MASTERED.toString()	
-									.replace("%skill%", skill.getName())
-									.replace("%level%", String.valueOf(pd.getSkillLevel(skill))));
+								.replace("%skill%", skill.getName())
+								.replace("%level%", String.valueOf(pd.getSkillLevel(skill))));
 						} else {
 							player.sendMessage(Lang.SKILLTREE_UP_LEVELED.toString()
-									.replace("%skill%", skill.getName())
-									.replace("%slevel%", String.valueOf(pd.getSkillLevel(skill)))
-									.replace("%slevelmax%", String.valueOf(pd.getMaxLevel(skill))));
+								.replace("%skill%", skill.getName())
+								.replace("%slevel%", String.valueOf(pd.getSkillLevel(skill)))
+								.replace("%slevelmax%", String.valueOf(pd.getMaxLevel(skill))));
 						}
 					}
 				}

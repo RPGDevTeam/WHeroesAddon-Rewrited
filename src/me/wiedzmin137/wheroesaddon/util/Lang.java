@@ -33,7 +33,11 @@ public enum Lang {
 	SKILLTREE_UP_UNLOCK_CANNOT("SkillTree.Up.CannotUnlock", "You can\'t unlock this skill!"),
 	SKILLTREE_UP_UNLOCK_SUCCESS("SkillTree.Up.UnlockSuccess", "You have unlocked %skill%! Level: %level%"),
 	SKILLTREE_UP_MASTERED("SkillTree.Up.Mastered", "You have mastered %skill% at level %level%!"),
-	SKILLTREE_UP_LEVELED("SkillTree.Up.Leveled", "%skill% leveled up: %slevel%/%slevelmax%");
+	SKILLTREE_UP_LEVELED("SkillTree.Up.Leveled", "%skill% leveled up: %slevel%/%slevelmax%"),
+	HELP_1("Help.1", "&9&l=._______==&1[&b&oSkillTree&1]&9&l==_______.="),
+	HELP_2("Help.2", "&b/&9ST Up &b<&oskill&b&b> [&oamount&b] &r- level up a skill"),
+	HELP_3("Help.3", "&b/&9ST Down &b<&oskill&b> [&oamount&b] &r- de-levels a skill"),
+	HELP_4("Help.4", "&b/&9ST GUI &r- show upgrading skills GUI (FUTURE)");
 	
 	
 	private String path;

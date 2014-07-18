@@ -37,18 +37,11 @@ public class PlayerData {
 		this.hero = WHeroesAddon.heroes.getCharacterManager().getHero(player);
 		this.hClass = hero.getHeroClass();
 		
-		for (String s : hClass.getSkillNames()) {
-			if (skills.get(s) == null) {
-				skills.put(s.toLowerCase(), (hero.hasAccessToSkill(s) ? 1 : 0));
-			}
-		}
-		
 		if (Integer.valueOf(playerPoints) == null) {
 			playerPoints = countPlayerPoints();
 		}
 		
 		p.setPlayerData(player, this);
-		p.getDatabaseManager().savePlayer(this);
 	}
 	
 	public boolean upgradeSkill(Skill skill, int amount) {
@@ -89,9 +82,10 @@ public class PlayerData {
 	}
 	
 	public int countPlayerPoints() {
-		return (Integer)Properties.SKILLTREE_POINTS_ON_START.getValue()
+		int amount = (Integer)Properties.SKILLTREE_POINTS_ON_START.getValue()
 				+ hero.getLevel() * (Integer)Properties.SKILLTREE_POINTS_PER_LEVEL.getValue()
 				- getUsedPoints();
+		return amount;
 	}
 	
 	public boolean hasSkillUnlocked(Skill skill) {
@@ -181,6 +175,11 @@ public class PlayerData {
 		if (playerPoints < 0) {
 			playerPoints = 0;
 		}
+	}
+	
+	public void reset() {
+		skills = null;
+		playerPoints = 0;
 	}
 	
 	public Player getPlayer() { return player; }

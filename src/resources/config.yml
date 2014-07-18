@@ -19,3 +19,11 @@ SkillTree:
 
   #Sets the cost to reset all stats (PLANNED)
   #Cost_Reset: 0
+
+MySQL:
+  enabled: false
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: INSERT PASSWORD
+  database: WHeroesAddon
