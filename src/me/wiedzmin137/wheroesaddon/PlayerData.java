@@ -1,7 +1,7 @@
 package me.wiedzmin137.wheroesaddon;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 import me.wiedzmin137.wheroesaddon.util.Properties;
 import me.wiedzmin137.wheroesaddon.util.SkillPointChangeEvent;
@@ -28,6 +28,7 @@ public class PlayerData {
 	
 	//Player statistics
 	private HashMap<String, Integer> skills = new HashMap<String, Integer>();
+	private HashMap<Skill, Boolean> lockedTable = new HashMap<Skill, Boolean>(); 
 	private int playerPoints;
 	
 	//Creating instace of PlayerData for proper Player count PlayerPoints
@@ -82,8 +83,8 @@ public class PlayerData {
 	}
 	
 	public int countPlayerPoints() {
-		int amount = (Integer)Properties.SKILLTREE_POINTS_ON_START.getValue()
-				+ hero.getLevel() * (Integer)Properties.SKILLTREE_POINTS_PER_LEVEL.getValue()
+		int amount = (Integer) Properties.SKILLTREE_POINTS_ON_START.getValue()
+				+ hero.getLevel() * (Integer) Properties.SKILLTREE_POINTS_PER_LEVEL.getValue()
 				- getUsedPoints();
 		return amount;
 	}
@@ -97,16 +98,7 @@ public class PlayerData {
 	}
 	
 	public boolean isLocked(Skill skill) {
-		if (skill != null && hero.canUseSkill(skill)) {
-			List<Skill> strongParents = p.getSkillTree(hero.getHeroClass()).getStrongParentSkills(skill);
-			List<Skill> weakParents = p.getSkillTree(hero.getHeroClass()).getWeakParentSkills(skill);
-			boolean skillLevel = p.getPlayerData(hero.getPlayer()).getSkillLevel(skill) < 1;
-			boolean hasStrongParents = strongParents != null && !strongParents.isEmpty();
-			boolean hasWeakParents = weakParents != null && !weakParents.isEmpty();
-			return skillLevel && hasStrongParents || hasWeakParents;
-		} else {
-			return true;
-		}
+		 return lockedTable.get(skill);
 	}
 	
 	public boolean isMastered(Skill skill) {
@@ -114,32 +106,12 @@ public class PlayerData {
 	}
 	
 	public boolean canUnlock(Skill skill) {
-		if (!hero.hasAccessToSkill(skill) || !hero.canUseSkill(skill)) {
+		if (!hero.hasAccessToSkill(skill) || !hero.canUseSkill(skill) || !isLocked(skill)) {
 			return false;
-		}
-		SkillTree st = p.getSkillTree(hClass);
-		
-		boolean hasStrongParents = (st.getStrongParentSkills(skill) != null) && (!st.getStrongParentSkills(skill).isEmpty());
-		boolean hasWeakParents = (st.getWeakParentSkills(skill) != null) && (!st.getWeakParentSkills(skill).isEmpty());
-		if (!hasStrongParents && !hasWeakParents) {
+		} else {
 			return true;
 		}
-		if (hasStrongParents) {
-			for (Skill name : st.getStrongParentSkills(skill)) {
-				if (!isMastered(name)) {
-					return false;
-				}
-			}
-		}
-		if (hasWeakParents) {
-			for (Skill name : st.getWeakParentSkills(skill)) {
-				if (isMastered(name)) {
-					return true;
-				}
-			}
-			return false;
-		}
-		return true;
+
 	}
 	
 	public int getSkillLevel(Skill skill) {
@@ -180,6 +152,82 @@ public class PlayerData {
 	public void reset() {
 		skills = null;
 		playerPoints = 0;
+	}
+	
+	protected void setupLock() {
+		for (String string : hClass.getSkillNames()) {
+			Skill skill = WHeroesAddon.heroes.getSkillManager().getSkill(string);
+			if (checkLocked(skill)) {
+				lockedTable.put(skill, true);
+			} else {
+				lockedTable.put(skill, false);
+			}
+		}
+	}
+	
+	private boolean checkLocked(Skill skill) {
+		if (p.getPlayerData(hero.getPlayer()).getSkillLevel(skill) > 0) {
+			return true;
+		}
+		
+		HashMap<Skill, Integer> strongParents = p.getSkillTree(hero.getHeroClass()).getStrongParentSkills(skill);
+		HashMap<Skill, Integer> weakParents = p.getSkillTree(hero.getHeroClass()).getWeakParentSkills(skill);
+			
+		boolean hasStrongParents = true;
+		boolean hasWeakParents = true;
+		
+		searchW:
+			if (weakParents != null && !weakParents.isEmpty()) {
+				for (Map.Entry<Skill, Integer> wParents : weakParents.entrySet()) {
+					switch (wParents.getValue()) {
+					case 0:
+						if (hasSkill(wParents.getKey())) {
+							hasWeakParents = false;
+						}
+						break;
+					case -1:
+						if (!isMastered(wParents.getKey())) {
+							hasWeakParents = false;
+						}
+						break;
+					default:
+						if (wParents.getValue() < 0) {
+							WHeroesAddon.LOG.info("Some weak parents of " + wParents.getKey().getName() + " are not configured properly");
+							break searchW;
+						}
+						if (!(getSkillLevel(wParents.getKey()) == wParents.getValue())) {
+							hasWeakParents = false;
+						}
+					}
+				}
+			}
+
+		searchS:
+			if (strongParents != null && !strongParents.isEmpty()) {
+				for (Map.Entry<Skill, Integer> sParents : strongParents.entrySet()) {
+					switch (sParents.getValue()) {
+					case 0:
+						if (hasSkill(sParents.getKey())) {
+							hasStrongParents = false;
+						}
+						break;
+					case -1:
+						if (!isMastered(sParents.getKey())) {
+							hasStrongParents = false;
+						}
+						break;
+					default:
+						if (sParents.getValue() < 0) {
+							WHeroesAddon.LOG.info("Some strong parents of " + sParents.getKey().getName() + " are not configured properly");
+							break searchS;
+						}
+						if (!(getSkillLevel(sParents.getKey()) == sParents.getValue())) {
+							hasStrongParents = false;
+						}
+					}
+				}
+			}
+		return hasStrongParents || hasWeakParents;
 	}
 	
 	public Player getPlayer() { return player; }

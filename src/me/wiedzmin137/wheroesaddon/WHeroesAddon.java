@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.common.collect.ImmutableList;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
 
@@ -65,7 +66,7 @@ public class WHeroesAddon extends JavaPlugin {
 		loadProperties();
 		
 		//Initialize CommandManager for handling commands
-		commandManager = new CommandManager();
+		commandManager = new CommandManager(this);
 		getCommand("skilltree").setExecutor(commandManager);
 		
 		//Create SkillTrees for all HeroClass
@@ -77,6 +78,11 @@ public class WHeroesAddon extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 		
 		dataManager = new DataManager(this);
+		
+		for (Player player : ImmutableList.copyOf(getServer().getOnlinePlayers())) {
+			dataManager.loadPlayer(player);
+		}
+		
 		LOG.info("[WHeroesAddon] vA0.2 has been enabled!");
 	}
 

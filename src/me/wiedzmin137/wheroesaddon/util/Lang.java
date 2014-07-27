@@ -15,7 +15,7 @@ public enum Lang {
 	ERROR_PERMISSIONS("Error.Permissions", "&4You don\'t have enough permissions!"),
 	ERROR_NOT_IN_GAME("Error.NotInGame", "&cYou must be in game to use this command"),
 	ERROR_NOT_ENOUGH_ARGUMENTS("Error.NotEnoughArguments", "&cNot enough arguments, use: %argument%"),
-	GUI_INVAILD_SKILLS("GUI.InvaildSkills", "Skill %skill% has no valid identifiers and can not be used on the menu! Please contact the author to fix the skill."),
+	GUI_INVALID_SKILLS("GUI.InvaildSkills", "Skill %skill% has no valid identifiers and can not be used on the menu! Please contact the author to fix the skill."),
 	GUI_LORE("GUI.Lore", "&eClick for use!"),
 	GUI_LORE_LEVEL("GUI.LoreLevel", "&f&oSkillLevel: %level%/%maxLevel%"),
 	GUI_LORE_MANA("GUI.LoreMana", "&f&oMana: %manaCost%"),

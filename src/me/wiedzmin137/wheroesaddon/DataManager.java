@@ -47,9 +47,8 @@ public class DataManager {
 		
 		pd.setSkillPoints(database.get(PLAYER_SKILLS, "skill", "level", "NAME", player.getName().toLowerCase()));
 		pd.setPoints(pd.countPlayerPoints());
-		pd.setPlayer(player);
+		pd.setupLock();
 
-		WHeroesAddon.LOG.info("Loaded PD");
 		savePlayer(pd);
 		return pd;
 	}
