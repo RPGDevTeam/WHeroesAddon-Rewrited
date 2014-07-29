@@ -22,7 +22,7 @@ import com.herocraftonline.heroes.characters.classes.HeroClass;
 public class WHeroesAddon extends JavaPlugin {
 	public final static Logger LOG = Logger.getLogger("Minecraft");
 	public static Heroes heroes;
-	private ScrollingMenuSign sms;
+	public static ScrollingMenuSign sms;
 	
 	private static WHeroesAddon instance;
 	

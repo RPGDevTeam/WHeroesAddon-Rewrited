@@ -23,7 +23,7 @@ public class SkillUpCommand {
 			Skill skill = WHeroesAddon.heroes.getSkillManager().getSkill(args[1]);
 			PlayerData pd = WHeroesAddon.getInstance().getPlayerData(player);
 			if(skill != null && hero.hasAccessToSkill(skill.getName())) {
-				if(pd.getMaxLevel(skill) == -1) {
+				if (pd.getMaxLevel(skill) == -1) {
 					player.sendMessage(Lang.SKILLTREE_UP_NOT_TO_INCREASE.toString());
 				} else {
 					int pointsToIncrease;
@@ -51,7 +51,7 @@ public class SkillUpCommand {
 							player.sendMessage(Lang.SKILLTREE_UP_UNLOCK_SUCCESS.toString()
 								.replace("%skill%", skill.getName())
 								.replace("%level%", String.valueOf(pd.getSkillLevel(skill))));
-						} else if(pd.isMastered(skill)) {
+						} else if (pd.isMastered(skill)) {
 							player.sendMessage(Lang.SKILLTREE_UP_MASTERED.toString()	
 								.replace("%skill%", skill.getName())
 								.replace("%level%", String.valueOf(pd.getSkillLevel(skill))));

@@ -3,6 +3,7 @@ package me.wiedzmin137.wheroesaddon;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.desht.scrollingmenusign.variables.VariablesManager;
 import me.wiedzmin137.wheroesaddon.util.Properties;
 import me.wiedzmin137.wheroesaddon.util.SkillPointChangeEvent;
 
@@ -42,6 +43,10 @@ public class PlayerData {
 			playerPoints = countPlayerPoints();
 		}
 		
+		for (String skill : hClass.getSkillNames()) {
+			actualizeMenuVariables(WHeroesAddon.heroes.getSkillManager().getSkill(skill));
+		}
+		
 		p.setPlayerData(player, this);
 	}
 	
@@ -50,10 +55,15 @@ public class PlayerData {
 			return false;
 
 		playerPoints -= amount;
-		skills.put(skill.getName().toLowerCase(), skills.get(skill.getName().toLowerCase()) + amount);
-		
+		try {
+			skills.put(skill.getName().toLowerCase(), skills.get(skill.getName().toLowerCase()) + amount);
+		} catch (NullPointerException e) {
+			skills.put(skill.getName().toLowerCase(), amount);
+		}
 		p.getServer().getPluginManager().callEvent(
 				new SkillPointChangeEvent(player, hClass, amount));
+		
+		actualizeMenuVariables(skill);
 		return true;
 	}
 	
@@ -65,21 +75,9 @@ public class PlayerData {
 		
 		p.getServer().getPluginManager().callEvent(
 				new SkillPointChangeEvent(player, hClass, amount));
+		
+		actualizeMenuVariables(skill);
 		return true;
-	}
-	
-	public void setSkillLevel(Skill skill, int amount) {
-		if (!hero.canUseSkill(skill) || !isLocked(skill)) return;
-		if (amount < 0) amount = 0;
-		skills.put(skill.getName(), amount);
-	}
-	
-	public int getUsedPoints() {
-		int points = 0;
-		for (int skillPoints : skills.values()) {
-			points += skillPoints;
-		}
-		return points;
 	}
 	
 	public int countPlayerPoints() {
@@ -111,19 +109,11 @@ public class PlayerData {
 		} else {
 			return true;
 		}
-
 	}
 	
-	public int getSkillLevel(Skill skill) {
-		if (!skills.containsKey(skill)) {
-			WHeroesAddon.LOG.info("[WHeroesAddon] This player does not have " + skill.getName() + " skill!");
-			return 0;
-		}
-		return skills.get(skill.getName());
-	}
-	
-	public int getMaxLevel(Skill skill) {
-		return p.getSkillTree(hClass).getMaxLevel(skill);
+	public void reset() {
+		skills = null;
+		playerPoints = 0;
 	}
 	
 	public void givePoints(int amount) {
@@ -149,9 +139,36 @@ public class PlayerData {
 		}
 	}
 	
-	public void reset() {
-		skills = null;
-		playerPoints = 0;
+	public void setSkillLevel(Skill skill, int amount) {
+		if (!hero.canUseSkill(skill) || !isLocked(skill)) return;
+		if (amount < 0) amount = 0;
+		skills.put(skill.getName(), amount);
+		actualizeMenuVariables(skill);
+	}
+	
+	public int getUsedPoints() {
+		int points = 0;
+		for (int skillPoints : skills.values()) {
+			points += skillPoints;
+		}
+		return points;
+	}
+	
+	public int getSkillLevel(Skill skill) {
+		if (!skills.containsKey(skill)) {
+			return 0;
+		}
+		return skills.get(skill.getName());
+	}
+	
+	public int getMaxLevel(Skill skill) {
+		return p.getSkillTree(hClass).getMaxLevel(skill);
+	}
+	
+	public void actualizeMenuVariables(Skill skill) {
+		VariablesManager vmgr = WHeroesAddon.sms.getHandler().getVariablesManager();
+		vmgr.set(player, skill.getName(), String.valueOf(getSkillLevel(skill)));
+		vmgr.set(player, "max" + skill.getName(), String.valueOf(getMaxLevel(skill)));
 	}
 	
 	protected void setupLock() {

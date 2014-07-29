@@ -9,7 +9,6 @@ import me.desht.scrollingmenusign.SMSException;
 import me.desht.scrollingmenusign.SMSHandler;
 import me.desht.scrollingmenusign.SMSMenu;
 import me.desht.scrollingmenusign.SMSMenuItem;
-import me.desht.scrollingmenusign.ScrollingMenuSign;
 import me.desht.scrollingmenusign.enums.SMSMenuAction;
 import me.desht.scrollingmenusign.views.SMSInventoryView;
 import me.wiedzmin137.wheroesaddon.util.Lang;
@@ -30,10 +29,11 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
  * 
  */
 public class SkillTree {
-	private static SMSHandler smsHandler = ((ScrollingMenuSign) WHeroesAddon.getInstance().getServer().getPluginManager().getPlugin("ScrollingMenuSign")).getHandler();
 	
 	private HeroClass hClass;
 	private WHeroesAddon plugin;
+	
+	private static SMSHandler smsHandler = WHeroesAddon.sms.getHandler();
 	
 	private HashMap<Skill, Integer> skillsWithMaxLevel = new HashMap<Skill, Integer>();
 	
@@ -94,7 +94,7 @@ public class SkillTree {
 					WHeroesAddon.LOG.severe(Lang.GUI_INVALID_SKILLS.toString().replace("%skill%", skillNames));
 				} else {
 					String indicator = (String)SkillConfigManager.getSetting(hClass, skill, "indicator");
-					boolean glow = SkillConfigManager.getSetting(hClass, skill, "glow", false);
+//					boolean glow = SkillConfigManager.getSetting(hClass, skill, "glow", false);
 					
 					//VERY unclear method to get all skill properties
 //					Map<String, Object> values = Properties.getHeroesProperties(hClass).getConfigurationSection("permitted-skills." + skill.getName()).getValues(false);
@@ -138,8 +138,8 @@ public class SkillTree {
 						.withCommand("/st down " + skill.getName() + " 1")
 						.withAltCommand("/st up " + skill.getName() + " 1")
 						.withIcon(indicator)
-						.withGlow(glow)
-//						.withLore(newLore)
+//						.withGlow(glow)
+						.withLore("<$" + skill.getName() + ">/<$max" + skill.getName() + ">")
 						.build();
 					menu.addItem(skillClass);
 				}
@@ -156,7 +156,7 @@ public class SkillTree {
 			menu = smsHandler.getMenu(hc + "-SkillTree");
 		} catch (SMSException e) {
 			WHeroesAddon.getInstance().getSkillTree(hClass).createSkillTreeMenu();
-			menu = smsHandler.getMenu(hc + "SkillTree");
+			menu = smsHandler.getMenu(hc + "-SkillTree");
 		}
 
 		SMSInventoryView view = null;
@@ -169,10 +169,7 @@ public class SkillTree {
 		}
 		view.setAutosave(true);
 
-		view
-		.toggleGUI(
-				pd
-				.getPlayer());
+		view.toggleGUI(pd.getPlayer());
 	}
 	
 	public HashMap<Skill, Integer> getStrongParentSkills(Skill skill) {
@@ -192,7 +189,12 @@ public class SkillTree {
 	}
 	
 	protected int getMaxLevel(Skill skill) {
-		return skillsWithMaxLevel.get(skill);
+		try {
+			return skillsWithMaxLevel.get(skill);
+		} catch (NullPointerException e) {
+			return 0;
+		}
+
 	}
 	
 	private HashMap<String, Integer> getParentSkills(Skill skill, String weakOrStrong) {

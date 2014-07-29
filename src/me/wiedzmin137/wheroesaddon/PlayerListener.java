@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.herocraftonline.heroes.api.events.ClassChangeEvent;
 import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
+import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
@@ -107,6 +108,9 @@ public class PlayerListener implements Listener {
 							hero.removeEffect(effect);
 					}
 				}
+				
+				for (String skill : hero.getHeroClass().getSkillNames())
+				pd.actualizeMenuVariables(WHeroesAddon.heroes.getSkillManager().getSkill(skill));
 			}
 		}, 1L);
 	}
@@ -146,8 +150,12 @@ public class PlayerListener implements Listener {
 		event.setStaminaCost(event.getStaminaCost() - stamina);
 	}
 	
-//	@EventHandler
-//	public void onSkillDamage(SkillDamageEvent event) {
-		//TODO change skill damages by SkillPoints in SkillTree
-//	}
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void onSpellDamageEvent(SkillDamageEvent event) {
+		if (event.getDamager() instanceof Hero) {
+			int modifieddmg = (int)SkillConfigManager.getUseSetting((Hero) event.getDamager(), event.getSkill(), "hst-damage", 0.0D, false)
+					* (p.getPlayerData(((Hero) event.getDamager()).getPlayer())).getSkillLevel(event.getSkill());
+			event.setDamage(event.getDamage() + modifieddmg);
+		}
+	}
 }
