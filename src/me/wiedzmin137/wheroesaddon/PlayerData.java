@@ -47,6 +47,8 @@ public class PlayerData {
 			actualizeMenuVariables(WHeroesAddon.heroes.getSkillManager().getSkill(skill));
 		}
 		
+		setupLock();
+		
 		p.setPlayerData(player, this);
 	}
 	
@@ -183,7 +185,7 @@ public class PlayerData {
 	}
 	
 	private boolean checkLocked(Skill skill) {
-		if (p.getPlayerData(hero.getPlayer()).getSkillLevel(skill) > 0) {
+		if (getSkillLevel(skill) > 0) {
 			return true;
 		}
 		
