@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/ScrollingMenuSign-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/Heroes-1.5.5.3.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/Marek/Documents/Eclipse/HeroesJavaDoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Bukkit-1.7.9-R0.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://jd.bukkit.org/dev/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/SQLibrary.jar" sourcepath="C:/Users/Marek/Documents/Eclipse/Source/SQLibrary-master.zip"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,8 +1,8 @@
 package me.wiedzmin137.wheroesaddon.commands;
 
-import me.wiedzmin137.wheroesaddon.PlayerData;
 import me.wiedzmin137.wheroesaddon.WHeroesAddon;
-import me.wiedzmin137.wheroesaddon.util.Lang;
+import me.wiedzmin137.wheroesaddon.data.Lang;
+import me.wiedzmin137.wheroesaddon.data.PlayerData;
 
 import org.bukkit.entity.Player;
 

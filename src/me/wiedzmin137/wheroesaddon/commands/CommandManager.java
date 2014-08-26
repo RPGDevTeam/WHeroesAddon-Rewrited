@@ -1,6 +1,5 @@
 package me.wiedzmin137.wheroesaddon.commands;
 
-import me.wiedzmin137.wheroesaddon.SkillTree;
 import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 
 import org.bukkit.command.Command;
@@ -24,7 +23,7 @@ public class CommandManager implements CommandExecutor {
 					case "down": SkillDownCommand.skillDown((Player)sender, args); break;
 				}
 			} else {
-				SkillTree.showSkillTree(plugin.getPlayerData((Player) sender), WHeroesAddon.heroes.getCharacterManager().getHero((Player) sender).getHeroClass());
+//				SkillTree.showSkillTree(plugin.getPlayerData((Player) sender), WHeroesAddon.heroes.getCharacterManager().getHero((Player) sender).getHeroClass());
 			}
 			return true;
 		}

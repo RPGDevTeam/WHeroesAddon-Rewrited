@@ -13,18 +13,16 @@ import java.util.logging.Level;
 import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 public class Database {
 	private static final String MYSQL_URL_TEMPLATE = "jdbc:mysql://%s/%s?user=%s&password=%s";
 	private static final String SQLITE_URL_TEMPLATE = "jdbc:sqlite:%s";
-	private final DatabaseFactory databaseFactory;
 	private final String connectionUrl;
 	private final String driver;
-	private boolean converted;
 	private Connection connection;
 	
-	protected Database(DatabaseFactory databaseFactory, DatabaseConfigBuilder builder) {
-		this.databaseFactory = databaseFactory;
+	public Database(Plugin databaseFactory, DatabaseConfigBuilder builder) {
 		this.driver = builder.getDriver();
 		if(builder.getFile() != null) {
 			//Use SQLITE
@@ -316,10 +314,6 @@ public class Database {
 		}
 		
 		this.connection = DriverManager.getConnection(connectionUrl);
-		if(!converted) {
-			this.converted = true;
-			databaseFactory.doConversion(this);
-		}
 	}
 	
 	/**

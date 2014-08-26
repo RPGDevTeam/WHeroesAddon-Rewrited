@@ -1,15 +1,14 @@
-package me.wiedzmin137.wheroesaddon;
+package me.wiedzmin137.wheroesaddon.data;
 
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Map;
 
+import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 import me.wiedzmin137.wheroesaddon.util.database.Database;
 import me.wiedzmin137.wheroesaddon.util.database.DatabaseConfigBuilder;
-import me.wiedzmin137.wheroesaddon.util.database.DatabaseFactory;
 import me.wiedzmin137.wheroesaddon.util.database.Table;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public class DataManager {
@@ -23,13 +22,9 @@ public class DataManager {
 	public DataManager(WHeroesAddon wHeroesAddon) {
 		this.plugin = wHeroesAddon;
 		
-		DatabaseFactory factory = new DatabaseFactory(plugin);
-		factory.generateConfigSection(); //Default config section
-		
-		ConfigurationSection section = wHeroesAddon.getConfig().getConfigurationSection("MySQL");
 		File sqliteFile = new File(wHeroesAddon.getDataFolder(), "database.db");
-		DatabaseConfigBuilder config = new DatabaseConfigBuilder(section, sqliteFile);
-		database = factory.getDatabase(config);
+		DatabaseConfigBuilder config = new DatabaseConfigBuilder(sqliteFile);
+		database = DataManager.getDatabase(config);
 		
 		try {
 			database.connect();
@@ -78,6 +73,10 @@ public class DataManager {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static Database getDatabase(DatabaseConfigBuilder builder) {
+		return new Database(WHeroesAddon.getInstance(), builder);
 	}
 	
 	public Database getDatabase() { return database; }

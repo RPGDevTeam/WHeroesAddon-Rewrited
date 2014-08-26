@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import me.desht.scrollingmenusign.ScrollingMenuSign;
 import me.wiedzmin137.wheroesaddon.commands.CommandManager;
-import me.wiedzmin137.wheroesaddon.util.Config;
-import me.wiedzmin137.wheroesaddon.util.Lang;
-import me.wiedzmin137.wheroesaddon.util.Properties;
+import me.wiedzmin137.wheroesaddon.data.Config;
+import me.wiedzmin137.wheroesaddon.data.DataManager;
+import me.wiedzmin137.wheroesaddon.data.Lang;
+import me.wiedzmin137.wheroesaddon.data.PlayerData;
+import me.wiedzmin137.wheroesaddon.data.Properties;
+import me.wiedzmin137.wheroesaddon.data.SkillTree;
+import me.wiedzmin137.wheroesaddon.util.MenuListener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,7 +25,7 @@ import com.herocraftonline.heroes.characters.classes.HeroClass;
 public class WHeroesAddon extends JavaPlugin {
 	public final static Logger LOG = Logger.getLogger("Minecraft");
 	public static Heroes heroes;
-	public static ScrollingMenuSign sms;
+//	public static ScrollingMenuSign sms;
 	
 	private static WHeroesAddon instance;
 	
@@ -40,7 +43,7 @@ public class WHeroesAddon extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		heroes = (Heroes) Bukkit.getServer().getPluginManager().getPlugin("Heroes");
-		sms = (ScrollingMenuSign) getServer().getPluginManager().getPlugin("ScrollingMenuSign");
+//		sms = (ScrollingMenuSign) getServer().getPluginManager().getPlugin("ScrollingMenuSign");
 		
 		//Check is Heroes exists
 		if (heroes == null) {
@@ -48,11 +51,11 @@ public class WHeroesAddon extends JavaPlugin {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-		if (sms == null) {
-			LOG.warning("[WHeroesAddon] Requires ScrollingMenuSign to run for now, please download it");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
+//		if (sms == null) {
+//			LOG.warning("[WHeroesAddon] Requires ScrollingMenuSign to run for now, please download it");
+//			getServer().getPluginManager().disablePlugin(this);
+//			return;
+//		}
 		
 		//Load and optionally create configs if not exist
 		try {
@@ -82,6 +85,8 @@ public class WHeroesAddon extends JavaPlugin {
 		for (Player player : ImmutableList.copyOf(getServer().getOnlinePlayers())) {
 			dataManager.loadPlayer(player);
 		}
+		
+		MenuListener.getInstance().register(this);
 		
 		LOG.info("[WHeroesAddon] vA0.2 has been enabled!");
 	}
@@ -126,7 +131,7 @@ public class WHeroesAddon extends JavaPlugin {
 	public SkillTree getSkillTree(HeroClass hc) { return skillTrees.get(hc); }
 	public PlayerData getPlayerData(Player player) { return pData.get(player); }
 	public DataManager getDatabaseManager() { return dataManager; }
-	protected void setPlayerData(Player player, PlayerData pd) { pData.put(player, pd); return; }
+	public void setPlayerData(Player player, PlayerData pd) { pData.put(player, pd); return; }
 	
 	public static WHeroesAddon getInstance() { return instance; }
 	

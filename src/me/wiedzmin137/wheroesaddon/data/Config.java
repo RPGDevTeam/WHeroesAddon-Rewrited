@@ -1,4 +1,4 @@
-package me.wiedzmin137.wheroesaddon.util;
+package me.wiedzmin137.wheroesaddon.data;
 
 import java.io.File;
 import java.io.FileOutputStream;

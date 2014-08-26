@@ -1,6 +1,7 @@
 package me.wiedzmin137.wheroesaddon;
 
-import me.wiedzmin137.wheroesaddon.util.Properties;
+import me.wiedzmin137.wheroesaddon.data.PlayerData;
+import me.wiedzmin137.wheroesaddon.data.Properties;
 import me.wiedzmin137.wheroesaddon.util.SkillPointChangeEvent;
 
 import org.bukkit.Bukkit;
@@ -64,7 +65,7 @@ public class PlayerListener implements Listener {
 	public void onLevelChange(HeroChangeLevelEvent event) {
 		final Hero hero = event.getHero();
 		PlayerData pd = p.getPlayerData(event.getHero().getPlayer());
-		int amount = (event.getTo() - event.getFrom()) * (int)Properties.SKILLTREE_POINTS_PER_LEVEL.getValue();
+		int amount = (event.getTo() - event.getFrom()) * (int) Properties.SKILLTREE_POINTS_PER_LEVEL.getValue();
 		pd.setPoints(amount + pd.getPoints());
 		if (hero.getHeroClass() != event.getHeroClass()) {
 			return;
@@ -109,8 +110,8 @@ public class PlayerListener implements Listener {
 					}
 				}
 				
-				for (String skill : hero.getHeroClass().getSkillNames())
-				pd.actualizeMenuVariables(WHeroesAddon.heroes.getSkillManager().getSkill(skill));
+//				for (String skill : hero.getHeroClass().getSkillNames())
+//					pd.actualizeMenuVariables(WHeroesAddon.heroes.getSkillManager().getSkill(skill));
 			}
 		}, 1L);
 	}
@@ -127,24 +128,24 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		int health = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0.0D, false)
+		int health = (int) SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0.0D, false)
 				* pd.getSkillLevel(skill);
 		health = (health > 0) ? health : 0;
 		event.setHealthCost(event.getHealthCost() + health);
 			    
-		int mana = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-mana", 0.0D, false)
+		int mana = (int) SkillConfigManager.getUseSetting(hero, skill, "hst-mana", 0.0D, false)
 				* pd.getSkillLevel(skill);
 		mana = (mana > 0) ? mana : 0;
 		event.setManaCost(event.getManaCost() - mana);
 
-		int reagent = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-reagent", 0.0D, false)
+		int reagent = (int) SkillConfigManager.getUseSetting(hero, skill, "hst-reagent", 0.0D, false)
 				* pd.getSkillLevel(skill);
 		reagent = (reagent > 0) ? reagent : 0;
 		ItemStack is = event.getReagentCost();
 		if (is != null) { is.setAmount(event.getReagentCost().getAmount() - reagent); }
 		event.setReagentCost(is);
 
-		int stamina = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-stamina", 0.0D, false)
+		int stamina = (int) SkillConfigManager.getUseSetting(hero, skill, "hst-stamina", 0.0D, false)
 				* pd.getSkillLevel(skill);
 		stamina = (stamina > 0) ? stamina : 0;
 		event.setStaminaCost(event.getStaminaCost() - stamina);
@@ -153,7 +154,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority=EventPriority.MONITOR)
 	public void onSpellDamageEvent(SkillDamageEvent event) {
 		if (event.getDamager() instanceof Hero) {
-			int modifieddmg = (int)SkillConfigManager.getUseSetting((Hero) event.getDamager(), event.getSkill(), "hst-damage", 0.0D, false)
+			int modifieddmg = (int) SkillConfigManager.getUseSetting((Hero) event.getDamager(), event.getSkill(), "hst-damage", 0.0D, false)
 					* (p.getPlayerData(((Hero) event.getDamager()).getPlayer())).getSkillLevel(event.getSkill());
 			event.setDamage(event.getDamage() + modifieddmg);
 		}

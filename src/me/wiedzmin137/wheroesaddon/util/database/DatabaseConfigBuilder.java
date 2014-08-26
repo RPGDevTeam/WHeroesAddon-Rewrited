@@ -2,7 +2,7 @@ package me.wiedzmin137.wheroesaddon.util.database;
 
 import java.io.File;
 
-import org.bukkit.configuration.ConfigurationSection;
+import me.wiedzmin137.wheroesaddon.data.Properties;
 
 public class DatabaseConfigBuilder {
 	private String driver;
@@ -13,30 +13,16 @@ public class DatabaseConfigBuilder {
 	private String file;
 	
 	/**
-	 * Default constructor, no settings.
-	 */
-	public DatabaseConfigBuilder() {}
-	
-	/**
-	 * Construct a database based on a config section with a driver and custom url.
-	 * This is quite advanced.
-	 * 
-	 * @param section Configuration section.
-	 */
-	public DatabaseConfigBuilder(ConfigurationSection section) {
-		driver(section.getString("driver")).url(section.getString("url")).database(section.getString("database")).user(section.getString("user")).password(section.getString("password"));
-	}
-	
-	/**
 	 * Construct a database based on a config section with sqlite backup, drivers auto-generated.
 	 * 
 	 * @param section Configuration section.
 	 * @param backup SQLIte file backup.
 	 */
-	public DatabaseConfigBuilder(ConfigurationSection section, File backup) {
-		if(section.getBoolean("enabled")) {
-			String url = String.format("%s:%d", section.getString("host"), section.getInt("port"));
-			driver("com.mysql.jdbc.Driver").url(url).database(section.getString("database")).user(section.getString("user")).password(section.getString("password"));
+	public DatabaseConfigBuilder(File backup) {
+		if ((Boolean) Properties.MYSQL_ENABLED.getValue()) {
+			String url = String.format("%s:%d", Properties.MYSQL_HOST.getValue(), Properties.MYSQL_PORT.getValue());
+			driver("com.mysql.jdbc.Driver").url(url).database((String) Properties.MYSQL_DATABASE.getValue())
+				.user((String) Properties.MYSQL_USER.getValue()).password((String) Properties.MYSQL_PASSWORD.getValue());
 		} else {
 			driver("org.sqlite.JDBC").sqlite(backup);
 		}

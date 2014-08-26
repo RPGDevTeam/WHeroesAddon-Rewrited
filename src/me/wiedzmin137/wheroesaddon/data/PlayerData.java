@@ -1,10 +1,9 @@
-package me.wiedzmin137.wheroesaddon;
+package me.wiedzmin137.wheroesaddon.data;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import me.desht.scrollingmenusign.variables.VariablesManager;
-import me.wiedzmin137.wheroesaddon.util.Properties;
+import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 import me.wiedzmin137.wheroesaddon.util.SkillPointChangeEvent;
 
 import org.bukkit.entity.Player;
@@ -43,9 +42,9 @@ public class PlayerData {
 			playerPoints = countPlayerPoints();
 		}
 		
-		for (String skill : hClass.getSkillNames()) {
-			actualizeMenuVariables(WHeroesAddon.heroes.getSkillManager().getSkill(skill));
-		}
+//		for (String skill : hClass.getSkillNames()) {
+//			actualizeMenuVariables(WHeroesAddon.heroes.getSkillManager().getSkill(skill));
+//		}
 		
 		setupLock();
 		
@@ -65,7 +64,7 @@ public class PlayerData {
 		p.getServer().getPluginManager().callEvent(
 				new SkillPointChangeEvent(player, hClass, amount));
 		
-		actualizeMenuVariables(skill);
+//		actualizeMenuVariables(skill);
 		return true;
 	}
 	
@@ -78,7 +77,7 @@ public class PlayerData {
 		p.getServer().getPluginManager().callEvent(
 				new SkillPointChangeEvent(player, hClass, amount));
 		
-		actualizeMenuVariables(skill);
+//		actualizeMenuVariables(skill);
 		return true;
 	}
 	
@@ -145,7 +144,7 @@ public class PlayerData {
 		if (!hero.canUseSkill(skill) || !isLocked(skill)) return;
 		if (amount < 0) amount = 0;
 		skills.put(skill.getName(), amount);
-		actualizeMenuVariables(skill);
+//		actualizeMenuVariables(skill);
 	}
 	
 	public int getUsedPoints() {
@@ -167,11 +166,11 @@ public class PlayerData {
 		return p.getSkillTree(hClass).getMaxLevel(skill);
 	}
 	
-	public void actualizeMenuVariables(Skill skill) {
-		VariablesManager vmgr = WHeroesAddon.sms.getHandler().getVariablesManager();
-		vmgr.set(player, skill.getName(), String.valueOf(getSkillLevel(skill)));
-		vmgr.set(player, "max" + skill.getName(), String.valueOf(getMaxLevel(skill)));
-	}
+//	public void actualizeMenuVariables(Skill skill) {
+//		VariablesManager vmgr = WHeroesAddon.sms.getHandler().getVariablesManager();
+//		vmgr.set(player, skill.getName(), String.valueOf(getSkillLevel(skill)));
+//		vmgr.set(player, "max" + skill.getName(), String.valueOf(getMaxLevel(skill)));
+//	}
 	
 	protected void setupLock() {
 		for (String string : hClass.getSkillNames()) {

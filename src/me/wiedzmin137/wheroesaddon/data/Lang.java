@@ -1,4 +1,4 @@
-package me.wiedzmin137.wheroesaddon.util;
+package me.wiedzmin137.wheroesaddon.data;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.ChatColor;
