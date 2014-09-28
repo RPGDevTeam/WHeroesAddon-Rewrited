@@ -28,7 +28,7 @@ public class PlayerData {
 	
 	//Player statistics
 	private HashMap<String, Integer> skills = new HashMap<String, Integer>();
-	private HashMap<Skill, Boolean> lockedTable = new HashMap<Skill, Boolean>(); 
+	public HashMap<Skill, Boolean> lockedTable = new HashMap<Skill, Boolean>(); 
 	private int playerPoints;
 	
 	//Creating instace of PlayerData for proper Player count PlayerPoints
@@ -57,9 +57,9 @@ public class PlayerData {
 
 		playerPoints -= amount;
 		try {
-			skills.put(skill.getName().toLowerCase(), skills.get(skill.getName().toLowerCase()) + amount);
+			skills.put(skill.getName(), skills.get(skill.getName()) + amount);
 		} catch (NullPointerException e) {
-			skills.put(skill.getName().toLowerCase(), amount);
+			skills.put(skill.getName(), amount);
 		}
 		p.getServer().getPluginManager().callEvent(
 				new SkillPointChangeEvent(player, hClass, amount));
@@ -69,7 +69,7 @@ public class PlayerData {
 	}
 	
 	public boolean downgradeSkill(Skill skill, int amount) {
-		if (skills.get(skill.getName().toLowerCase()) > 0) return false;
+		if (skills.get(skill.getName()) > 0) return false;
 		
 		playerPoints += amount;
 		skills.put(skill.getName(), skills.get(skill.getName()) - amount);
@@ -156,7 +156,7 @@ public class PlayerData {
 	}
 	
 	public int getSkillLevel(Skill skill) {
-		if (!skills.containsKey(skill)) {
+		if (!hasSkill(skill)) {
 			return 0;
 		}
 		return skills.get(skill.getName());
@@ -165,12 +165,6 @@ public class PlayerData {
 	public int getMaxLevel(Skill skill) {
 		return p.getSkillTree(hClass).getMaxLevel(skill);
 	}
-	
-//	public void actualizeMenuVariables(Skill skill) {
-//		VariablesManager vmgr = WHeroesAddon.sms.getHandler().getVariablesManager();
-//		vmgr.set(player, skill.getName(), String.valueOf(getSkillLevel(skill)));
-//		vmgr.set(player, "max" + skill.getName(), String.valueOf(getMaxLevel(skill)));
-//	}
 	
 	protected void setupLock() {
 		for (String string : hClass.getSkillNames()) {
@@ -186,6 +180,10 @@ public class PlayerData {
 	private boolean checkLocked(Skill skill) {
 		if (getSkillLevel(skill) > 0) {
 			return true;
+		}
+		
+		if (Properties.getHeroesProperties(hClass).getConfigurationSection("permitted-skills." + skill.getName() + ".max-level") == null) {
+			return false;
 		}
 		
 		HashMap<Skill, Integer> strongParents = p.getSkillTree(hero.getHeroClass()).getStrongParentSkills(skill);

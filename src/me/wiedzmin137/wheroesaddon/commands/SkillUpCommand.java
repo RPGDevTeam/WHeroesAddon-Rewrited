@@ -22,7 +22,7 @@ public class SkillUpCommand {
 			Hero hero = WHeroesAddon.heroes.getCharacterManager().getHero(player);
 			Skill skill = WHeroesAddon.heroes.getSkillManager().getSkill(args[1]);
 			PlayerData pd = WHeroesAddon.getInstance().getPlayerData(player);
-			if(skill != null && hero.hasAccessToSkill(skill.getName())) {
+			if (skill != null && hero.hasAccessToSkill(skill.getName())) {
 				if (pd.getMaxLevel(skill) == -1) {
 					player.sendMessage(Lang.SKILLTREE_UP_NOT_TO_INCREASE.toString());
 				} else {
@@ -45,8 +45,6 @@ public class SkillUpCommand {
 							pd.removePoints(pointsToIncrease);
 						}
 						pd.upgradeSkill(skill, pointsToIncrease);
-						WHeroesAddon.getInstance().getDatabaseManager().savePlayer(pd);
-						hero.addEffect(new Effect(skill, skill.getName()));
 						if (pd.isLocked(skill)) {
 							player.sendMessage(Lang.SKILLTREE_UP_UNLOCK_SUCCESS.toString()
 								.replace("%skill%", skill.getName())
@@ -61,6 +59,8 @@ public class SkillUpCommand {
 								.replace("%slevel%", String.valueOf(pd.getSkillLevel(skill)))
 								.replace("%slevelmax%", String.valueOf(pd.getMaxLevel(skill))));
 						}
+						WHeroesAddon.getInstance().getDatabaseManager().savePlayer(pd);
+						hero.addEffect(new Effect(skill, skill.getName()));
 					}
 				}
 			} else {

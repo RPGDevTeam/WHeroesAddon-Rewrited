@@ -12,6 +12,7 @@ import com.herocraftonline.heroes.characters.classes.HeroClass;
 
 public enum Properties {
 	SKILLTREE_ENABLED("SkillTree.Enabled", true),
+	SKILLTREE_SKILLS_DEFAULT_LOCKED("SkillTree.SkillsDefaultLocked", false),
 	SKILLTREE_POINTS_PER_LEVEL("SkillTree.PointsPerLevel", 1),
 	SKILLTREE_POINTS_ON_START("SkillTree.PointsOnStart", 3),
 	SKILLTREE_COST_UNLOCK("SkillTree.CostToUnlock", 0),

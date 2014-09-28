@@ -5,6 +5,9 @@ SkillTree:
   #Are the SkillTree enabled [WARNING: Need tests!]?
   Enabled: true
 
+  #Should skills be locked it not unlocked?
+  SkillsDefaultLocked: false
+
   #Sets how many SkillPoints the player will earn/lose per level.  
   Points_Per_Level: 1
 

@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import me.wiedzmin137.wheroesaddon.commands.CommandManager;
-import me.wiedzmin137.wheroesaddon.data.Config;
 import me.wiedzmin137.wheroesaddon.data.DataManager;
 import me.wiedzmin137.wheroesaddon.data.Lang;
 import me.wiedzmin137.wheroesaddon.data.PlayerData;
 import me.wiedzmin137.wheroesaddon.data.Properties;
 import me.wiedzmin137.wheroesaddon.data.SkillTree;
+import me.wiedzmin137.wheroesaddon.util.Config;
 import me.wiedzmin137.wheroesaddon.util.MenuListener;
 
 import org.bukkit.Bukkit;
@@ -25,7 +25,6 @@ import com.herocraftonline.heroes.characters.classes.HeroClass;
 public class WHeroesAddon extends JavaPlugin {
 	public final static Logger LOG = Logger.getLogger("Minecraft");
 	public static Heroes heroes;
-//	public static ScrollingMenuSign sms;
 	
 	private static WHeroesAddon instance;
 	
@@ -43,7 +42,6 @@ public class WHeroesAddon extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		heroes = (Heroes) Bukkit.getServer().getPluginManager().getPlugin("Heroes");
-//		sms = (ScrollingMenuSign) getServer().getPluginManager().getPlugin("ScrollingMenuSign");
 		
 		//Check is Heroes exists
 		if (heroes == null) {
@@ -51,16 +49,13 @@ public class WHeroesAddon extends JavaPlugin {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-//		if (sms == null) {
-//			LOG.warning("[WHeroesAddon] Requires ScrollingMenuSign to run for now, please download it");
-//			getServer().getPluginManager().disablePlugin(this);
-//			return;
-//		}
-		
+
 		//Load and optionally create configs if not exist
 		try {
 			config = new Config(this, "config.yml");
+			config.checkFile(config.getFile());
 			lang = new Config(this, "lang.yml");
+			lang.checkFile(config.getFile());
 		} catch (Exception e) {
 			LOG.severe("[WHeroesAddon] Cannot load configs. Error log:");
 			e.printStackTrace();
@@ -88,7 +83,7 @@ public class WHeroesAddon extends JavaPlugin {
 		
 		MenuListener.getInstance().register(this);
 		
-		LOG.info("[WHeroesAddon] vA0.2 has been enabled!");
+		LOG.info("[WHeroesAddon] vB0.2 has been enabled!");
 	}
 
 	

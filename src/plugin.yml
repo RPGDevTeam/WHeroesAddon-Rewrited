@@ -1,6 +1,6 @@
 name: WHeroesAddon
 main: me.wiedzmin137.wheroesaddon.WHeroesAddon
-version: A0.1
+version: B0.2
 authors: [Wiedzmin137, Bednar12]
 softdepend: [Heroes, ScrollingMenuSign]
 

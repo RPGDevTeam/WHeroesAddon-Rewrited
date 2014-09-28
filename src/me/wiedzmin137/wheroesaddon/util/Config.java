@@ -1,4 +1,4 @@
-package me.wiedzmin137.wheroesaddon.data;
+package me.wiedzmin137.wheroesaddon.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,13 +22,9 @@ public class Config {
 		if (!dataFolder.exists()) {
 			dataFolder.mkdir();
 		}
-		
-		checkFile(file);
-		
-		yamlConf = YamlConfiguration.loadConfiguration(getFile());
 	}
 	
-	public static void checkFile(File out) throws Exception {
+	public void checkFile(File out) throws Exception {
 		if (!out.exists()) {
 			InputStream fis = Config.class.getResourceAsStream("/resources/" + out.getName());
 			FileOutputStream fos = new FileOutputStream(out);
@@ -49,6 +45,7 @@ public class Config {
 				}
 			}
 		}
+		yamlConf = YamlConfiguration.loadConfiguration(getFile());
 	}
 	
 	public YamlConfiguration getYAML() { return yamlConf; }

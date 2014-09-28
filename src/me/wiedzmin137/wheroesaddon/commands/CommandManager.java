@@ -21,9 +21,10 @@ public class CommandManager implements CommandExecutor {
 				switch (args[0].toLowerCase()) {
 					case "up": SkillUpCommand.skillUp((Player)sender, args); break;
 					case "down": SkillDownCommand.skillDown((Player)sender, args); break;
+					//case "pd": sender.sendMessage(plugin.getPlayerData((Player) sender).lockedTable.toString());
 				}
 			} else {
-//				SkillTree.showSkillTree(plugin.getPlayerData((Player) sender), WHeroesAddon.heroes.getCharacterManager().getHero((Player) sender).getHeroClass());
+				plugin.getSkillTree(WHeroesAddon.heroes.getCharacterManager().getHero((Player) sender).getHeroClass()).showMenu((Player) sender);
 			}
 			return true;
 		}

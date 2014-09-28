@@ -18,6 +18,8 @@
  */
 package me.wiedzmin137.wheroesaddon.util.menu.menus;
 
+import me.wiedzmin137.wheroesaddon.util.menu.menus.ItemMenu;
+
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
