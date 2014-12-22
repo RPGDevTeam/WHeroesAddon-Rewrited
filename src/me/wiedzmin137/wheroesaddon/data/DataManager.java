@@ -42,7 +42,7 @@ public class DataManager {
 		
 		pd.setSkillPoints(database.get(PLAYER_SKILLS, "skill", "level", "NAME", player.getName().toLowerCase()));
 		pd.setPoints(pd.countPlayerPoints());
-		pd.setupLock();
+		pd.recountLock();
 
 		savePlayer(pd);
 		return pd;

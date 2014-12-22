@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import me.wiedzmin137.wheroesaddon.commands.CommandManager;
+import me.wiedzmin137.wheroesaddon.data.CooldownScoreboard;
 import me.wiedzmin137.wheroesaddon.data.DataManager;
 import me.wiedzmin137.wheroesaddon.data.Lang;
 import me.wiedzmin137.wheroesaddon.data.PlayerData;
@@ -36,7 +37,7 @@ public class WHeroesAddon extends JavaPlugin {
 	private DataManager dataManager;
 	
 	private HashMap<HeroClass, SkillTree> skillTrees = new HashMap<HeroClass, SkillTree>();
-	private HashMap<Player, PlayerData> pData = new HashMap<Player, PlayerData>();
+	public HashMap<Player, PlayerData> pData = new HashMap<Player, PlayerData>(); //TODO change public
 	
 	@Override
 	public void onEnable() {
@@ -74,6 +75,7 @@ public class WHeroesAddon extends JavaPlugin {
 		}
 		
 		getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+		getServer().getPluginManager().registerEvents(new CooldownScoreboard(this), this); //TODO initialize only if Config field is true
 		
 		dataManager = new DataManager(this);
 		

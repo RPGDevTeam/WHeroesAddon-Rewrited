@@ -7,10 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
-
-import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -154,9 +151,9 @@ public class Database {
 			HashMap<String, Integer> skills = new HashMap<String, Integer>();
 			while (result.next()) {
 				skills.put(result.getString("skill"), result.getInt("level"));
-				for (Map.Entry<String, Integer> addedSkill : skills.entrySet()) {
-					WHeroesAddon.LOG.info(addedSkill.toString());
-				}
+//				for (Map.Entry<String, Integer> addedSkill : skills.entrySet()) {
+//					WHeroesAddon.LOG.info(addedSkill.toString());
+//				}
 			}
 			return skills;
 		} catch (SQLException e) {
