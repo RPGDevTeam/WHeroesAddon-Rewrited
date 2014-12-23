@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import me.wiedzmin137.wheroesaddon.WHeroesAddon;
+import me.wiedzmin137.wheroesaddon.util.Utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.herocraftonline.heroes.characters.Hero;
@@ -88,7 +90,11 @@ public class SkillBar {
 			if (!plugin.getPlayerData(player).isLocked(skill)) {
 				if (player.getItemOnCursor() == null && player.getItemOnCursor().getType() == Material.AIR) {
 					slots.put(slot, skill.getName());
-					player.getInventory().setItem(slot, getSkillItem(Material.GOLD_RECORD, skill)); //TODO get better material somehow
+					PlayerInventory inv = player.getInventory();
+					if (inv.getItem(slot) != null) {
+						Utils.moveItem(player, slot);
+					}
+					inv.setItem(slot, getSkillItem(Material.GOLD_RECORD, skill)); //TODO get better material somehow
 				}
 			}
 		}
@@ -203,6 +209,7 @@ public class SkillBar {
 		}
 	}
 	
+	public int getHandSlot() { return handSlot; }
 	public HashMap<Integer, String> getData() {  return slots; }
 	public void setData(HashMap<Integer, String> slots) { this.slots = slots; }
 	
@@ -239,8 +246,8 @@ public class SkillBar {
 			ItemStack item = event.getItemDrop().getItemStack();
 			
 			if (sb.getAssignType(item) != AssignType.NONE) {
-				sb.slots.put(sb.handSlot, null);
-				sb.unassignSlot(sb.handSlot);
+				sb.slots.put(sb.getHandSlot(), null);
+				sb.unassignSlot(sb.getHandSlot());
 				event.setCancelled(true);
 				return;
 			}

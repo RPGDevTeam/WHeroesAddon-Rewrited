@@ -6,6 +6,9 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 public class Utils {
 	public static String u(String str) {
@@ -42,5 +45,32 @@ public class Utils {
 			lineLen += word.length() + 1;
 		}
 		return output.toString().split("\n");
+	}
+	
+	public static boolean moveItem(final Player player, final int slot) {
+		final PlayerInventory inv = player.getInventory();
+		final ItemStack item = inv.getItem(slot);
+		final int empty = firstEmpty(inv.getContents());
+		if (empty == -1) {
+			player.getWorld().dropItemNaturally(player.getLocation(), item);
+			if (slot != -1) {
+				inv.clear(slot);
+			}
+			return false;
+		}
+		inv.setItem(empty, item);
+		if (slot != -1) {
+			inv.clear(slot);
+		}
+		return true;
+	}
+	
+	public static int firstEmpty(final ItemStack[] inventory) {
+		for (int i = 9; i < inventory.length; ++i) {
+			if (inventory[i] == null) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }

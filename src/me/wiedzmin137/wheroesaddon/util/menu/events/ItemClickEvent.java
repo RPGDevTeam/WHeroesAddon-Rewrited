@@ -19,18 +19,21 @@
 package me.wiedzmin137.wheroesaddon.util.menu.events;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 
 /**
  * An event called when an Item in the {@link ninja.amp.ampmenus.menus.ItemMenu} is clicked.
  */
 public class ItemClickEvent {
     private Player player;
+    private ClickType clickType;
     private boolean goBack = false;
     private boolean close = false;
     private boolean update = false;
 
-    public ItemClickEvent(Player player) {
+    public ItemClickEvent(Player player, ClickType clickType) {
         this.player = player;
+        this.clickType = clickType;
     }
 
     /**
@@ -40,6 +43,16 @@ public class ItemClickEvent {
      */
     public Player getPlayer() {
         return player;
+    }
+    
+    /**
+     * Gets {@link org.bukkit.event.inventory.ClickType} of event.
+     *
+     * @return The {@link org.bukkit.event.inventory.ClickType}.
+     * @author Wiedzmin137
+     */
+    public ClickType getClickType() {
+        return clickType;
     }
 
     /**

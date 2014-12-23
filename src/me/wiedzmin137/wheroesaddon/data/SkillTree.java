@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -134,6 +135,7 @@ public class SkillTree {
 				f.put("Number", number); number++;
 				f.put("IsHide", false);
 				f.put("IsSkill", true);
+				f.put("IsBlockItem", true);
 				f.put("Indicator", "STONE");
 				f.put("Lore", Arrays.asList("&f§lLevel§f: &o%level%/%maxlevel%", "&f§oLevel needed§f: %lvlneed%" , "", "&6&o%description%", "", "&f&o%canIUpgrade%"));
 				hashMap.add(f);
@@ -159,6 +161,10 @@ public class SkillTree {
 				Skill skill = WHeroesAddon.heroes.getSkillManager().getSkill((String) map.get("Name"));
 				String[] lore = (Utils.u((List<String>) map.get("Lore"))).toArray(new String[0]);
 				item = new SkillTreeItem(Utils.u((String) map.get("DisplayName")), stack, lore, skill, (boolean) map.get("IsHide"));
+			} else if ((boolean) map.get("IsBlockItem")) {
+				ItemStack stack = new ItemStack(Material.getMaterial((String) map.get("Indicator")));
+				String[] lore = (Utils.u((List<String>) map.get("Lore"))).toArray(new String[0]);
+				item = new BarBlockItem(Utils.u((String) map.get("DisplayName")), stack, lore);
 			} else {
 				ItemStack stack = new ItemStack(Material.getMaterial((String) map.get("Indicator")));
 				String[] lore = (Utils.u((List<String>) map.get("Lore"))).toArray(new String[0]);
@@ -195,7 +201,6 @@ public class SkillTree {
 		} catch (NullPointerException e) {
 			return 0;
 		}
-
 	}
 	
 	private HashMap<String, Integer> getParentSkills(Skill skill, String weakOrStrong) {
@@ -222,8 +227,13 @@ public class SkillTree {
 		
 		@Override
 		public void onItemClick(ItemClickEvent event) {
-			event.getPlayer().performCommand("st up " + skill.getName());
-			
+			SkillBar sb = WHeroesAddon.getInstance().getPlayerData(event.getPlayer()).getSkillBar();
+			if (event.getClickType() == ClickType.SHIFT_RIGHT || event.getClickType() == ClickType.SHIFT_LEFT) {
+				sb.assignSkill(skill, sb.getHandSlot());
+			} else {
+				event.getPlayer().performCommand("st up " + skill.getName());
+				//TODO add possibility to downgrade skill here (only if allowed in Properties)
+			}
 		}
 		
 		@Override
@@ -260,6 +270,20 @@ public class SkillTree {
 		}
 		public Skill getSkill() { return skill; }
 		public boolean isHide() { return isHide; }
+	}
+	
+	private static class BarBlockItem extends MenuItem {
+		public BarBlockItem(String displayName, ItemStack icon, String[] lore) {
+			super(displayName, icon, lore);
+		}
+		
+		@Override
+		public void onItemClick(ItemClickEvent event) {
+			SkillBar sb = WHeroesAddon.getInstance().getPlayerData(event.getPlayer()).getSkillBar();
+			if (sb.isEnabled()) {
+				sb.assignBlockedSlot(sb.getHandSlot());
+			}
+		}
 	}
 	
 	private static class SkillTreeMenu extends ItemMenu {
