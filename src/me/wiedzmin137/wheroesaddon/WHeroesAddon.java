@@ -10,6 +10,7 @@ import me.wiedzmin137.wheroesaddon.data.DataManager;
 import me.wiedzmin137.wheroesaddon.data.Lang;
 import me.wiedzmin137.wheroesaddon.data.PlayerData;
 import me.wiedzmin137.wheroesaddon.data.Properties;
+import me.wiedzmin137.wheroesaddon.data.SkillBar;
 import me.wiedzmin137.wheroesaddon.data.SkillTree;
 import me.wiedzmin137.wheroesaddon.util.Config;
 import me.wiedzmin137.wheroesaddon.util.MenuListener;
@@ -76,6 +77,10 @@ public class WHeroesAddon extends JavaPlugin {
 		
 		getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 		getServer().getPluginManager().registerEvents(new CooldownScoreboard(this), this); //TODO initialize only if Config field is true
+		
+		if ((boolean) Properties.SKILLBAR_ENABLED.getValue()) {
+			getServer().getPluginManager().registerEvents(new SkillBar.SkillBarListener(this), this);
+		}
 		
 		dataManager = new DataManager(this);
 		

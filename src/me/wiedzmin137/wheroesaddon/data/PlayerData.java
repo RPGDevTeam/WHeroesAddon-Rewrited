@@ -28,6 +28,8 @@ public class PlayerData {
 	private Hero hero;
 	private HeroClass hClass;
 	
+	private SkillBar skillBar;
+	
 	//Player statistics
 	private HashMap<String, Integer> skills = new HashMap<String, Integer>();
 	public HashMap<Skill, Boolean> lockedTable; 
@@ -259,9 +261,12 @@ public class PlayerData {
 		}
 	}
 	
-	public Player getPlayer() { return player; }
 	public int getPoints() { return playerPoints; }
+	public Player getPlayer() { return player; }
+	public SkillBar getSkillBar() { return skillBar; }
 	public HashMap<String, Integer> getSkillsPoints() { return skills; }
+	
+	protected void setSkillBar(SkillBar skillBar) { this.skillBar = skillBar; }
 	protected void setPlayer(Player player) { this.player = player; }
 	protected void setSkillPoints(HashMap<String, Integer> skills) { this.skills = skills; }
 }

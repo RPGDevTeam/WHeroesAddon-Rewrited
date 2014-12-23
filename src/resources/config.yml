@@ -1,8 +1,8 @@
 # WHeroesAddon config by Wiedzmin137
 
-# Configs for SkillTrees
+# Configs for SkillTree
 SkillTree:
-  #Are the SkillTree enabled [WARNING: Need tests!]?
+  #Should SkillTree be enabled?
   Enabled: true
 
   #Should skills be locked it not unlocked?
@@ -10,6 +10,9 @@ SkillTree:
 
   #Sets how many SkillPoints the player will earn/lose per level.  
   Points_Per_Level: 1
+
+  #Sets is skill downgrading be enabled (PLANNED)
+  #SkillDowngrading: false
 
   #Sets the cost to unlock a skill (PLANNED)
   #Cost_Unlock: 0
@@ -23,10 +26,26 @@ SkillTree:
   #Sets the cost to reset all stats (PLANNED)
   #Cost_Reset: 0
 
+# Configs for CooldownScoreboard
+CooldownScoreboard:
+  #Should CooldownScoreboard be enabled?
+  Enabled: true
+
+# Configs for SkillBar
+SkillBar:
+  #Should SkillBar be enabled?
+  Enabled: true
+
+  Items:
+    #Default item for SkillItem
+    Skill: GOLD_RECORD
+    #Default item for BlockItem
+    Block: RECORD_11
+
 MySQL:
-  enabled: false
-  host: 127.0.0.1
-  port: 3306
-  user: root
-  password: INSERT PASSWORD
-  database: WHeroesAddon
+  Enabled: false
+  Host: 127.0.0.1
+  Port: 3306
+  User: root
+  Password: INSERT PASSWORD
+  Database: WHeroesAddon
