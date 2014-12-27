@@ -5,7 +5,6 @@ import java.util.Map;
 import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +21,6 @@ public class CooldownScoreboard implements Listener {
 	
 	@SuppressWarnings("unused")
 	private WHeroesAddon plugin;
-	private Scoreboard emptyScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	
 	public CooldownScoreboard(final WHeroesAddon plugin) {
 		this.plugin = plugin;
@@ -33,14 +31,21 @@ public class CooldownScoreboard implements Listener {
 				for (Player player : ImmutableList.copyOf(plugin.getServer().getOnlinePlayers())) {
 					Hero hero = WHeroesAddon.heroes.getCharacterManager().getHero(player);
 					
-					Map<String, Long> tempMap = hero.getCooldowns();
-					if (tempMap == null) {
-						player.setScoreboard(emptyScoreboard);
-						return;
+					Map<String, Long> map = hero.getCooldowns();
+					if (map == null) {
+						if (player.getScoreboard().getObjective(DisplaySlot.SIDEBAR) != null) {
+							player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+							return;
+						}
 					}
 					
+					if (getScoreboard(player).getObjective(DisplaySlot.SIDEBAR) == null) {
+						setScoreboard(player);
+					}
+					
+					boolean hasObject = false;
 					final long time = System.currentTimeMillis();
-					for (Map.Entry<String, Long> entry : tempMap.entrySet()) {
+					for (Map.Entry<String, Long> entry : map.entrySet()) {
 						if (entry.getKey().equals("global")) {
 							continue;
 						}
@@ -49,11 +54,17 @@ public class CooldownScoreboard implements Listener {
 								continue;
 						} else {
 							final long timeLeft = entry.getValue() - time;
+							String name = Lang.COOLDOWN_SCOREBOARD_ITEM.toString().replace("%skill%", skill.getName());
 							if (timeLeft <= 0L) {
+								getScoreboard(player).resetScores(name);
 								continue;
 							}
-							updateScoreboard(player, skill.getName(), (int) (timeLeft / 1000L));
+							hasObject = true;
+							updateScoreboard(player, name, (int) (timeLeft / 1000L));
 						}
+					}
+					if (hasObject == false) {
+						getScoreboard(player).clearSlot(DisplaySlot.SIDEBAR);
 					}
 				}
 			}
@@ -69,7 +80,7 @@ public class CooldownScoreboard implements Listener {
 		Scoreboard scoreboard = player.getServer().getScoreboardManager().getNewScoreboard();
 		Objective scoreboardObj = scoreboard.registerNewObjective("test", "dummy");
 		scoreboardObj.setDisplaySlot(DisplaySlot.SIDEBAR);
-		scoreboardObj.setDisplayName(ChatColor.RED + "Cooldowns"); //TODO add Lang field
+		scoreboardObj.setDisplayName(Lang.COOLDOWN_SCOREBOARD_NAME.toString());
 		player.setScoreboard(scoreboard);
 	}
 	 

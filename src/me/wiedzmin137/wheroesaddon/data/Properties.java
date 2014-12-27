@@ -1,6 +1,7 @@
 package me.wiedzmin137.wheroesaddon.data;
 
 import java.io.File;
+import java.util.HashMap;
 
 import me.wiedzmin137.wheroesaddon.WHeroesAddon;
 
@@ -22,6 +23,8 @@ public enum Properties {
 	SKILLBAR_ENABLED("SkillBar.Enabled", true),
 	SKILLBAR_ITEMS_SKILL("SkillBar.Items.Skill", "GOLD_RECORD"),
 	SKILLBAR_ITEMS_BLOCK("SkillBar.Items.Block", "RECORD_11"),
+	SCOREBOARD_COOLDOWN_ENABLED("ScoreboardCooldown.Enabled", true),
+	SKILLBOOK_ENABLED("SkillBook.Enabled", true),
 	MYSQL_ENABLED("MySQL.Enabled", false),
 	MYSQL_HOST("MySQL.Host", "localhost"),
 	MYSQL_PORT("MySQL.Port", 3306),
@@ -54,6 +57,8 @@ public enum Properties {
 	public static void setFile(YamlConfiguration config) {
 		PROPERTIES = config;
 	}
+	
+	public static HashMap<HeroClass, YamlConfiguration> classConfig = new HashMap<>();
 	
 	public static FileConfiguration getHeroesProperties(HeroClass hClass) {
 		File classFolder = new File(WHeroesAddon.heroes.getDataFolder(), "classes");

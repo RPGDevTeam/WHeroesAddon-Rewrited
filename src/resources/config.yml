@@ -31,6 +31,11 @@ CooldownScoreboard:
   #Should CooldownScoreboard be enabled?
   Enabled: true
 
+# Configs for SkillBoook
+SkillBoook:
+  #Should SkillBoook be enabled?
+  Enabled: true
+
 # Configs for SkillBar
 SkillBar:
   #Should SkillBar be enabled?

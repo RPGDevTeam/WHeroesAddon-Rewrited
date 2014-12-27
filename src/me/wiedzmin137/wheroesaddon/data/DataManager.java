@@ -18,7 +18,7 @@ public class DataManager {
 	public static final Table PLAYER_POINTS = new Table("PLAYER_POINTS", "NAME VARCHAR(16),player_points INT");
 	public static final Table PLAYER_SKILLS = new Table("PLAYER_SKILLS", "NAME VARCHAR(16),skill VARCHAR(16),level INT");
 	public static final Table PLAYER_SKILLBAR = new Table("PLAYER_SKILLBAR", "NAME VARCHAR(16)"
-			+ ",1 VARCHAR(16),2 VARCHAR(16),3 VARCHAR(16),4 VARCHAR(16),5 VARCHAR(16),6 VARCHAR(16),7 VARCHAR(16),8 VARCHAR(16),9 VARCHAR(16)");
+			+ ",zero VARCHAR(16),one VARCHAR(16),two VARCHAR(16),three VARCHAR(16),four VARCHAR(16),five VARCHAR(16),six VARCHAR(16),seven VARCHAR(16),eight VARCHAR(16)");
 
 	private Database database;
 	
@@ -52,10 +52,10 @@ public class DataManager {
 			SkillBar skillBar = new SkillBar(plugin, player);
 			HashMap<Integer, String> slots = new HashMap<>();
 			for (int i = 0; i < 9; i++) {
-				slots.put(i, (String) database.get(PLAYER_SKILLBAR, "NAME", String.valueOf(i) , player.getName().toLowerCase()));
+				slots.put(i, (String) database.get(PLAYER_SKILLBAR, "NAME", Numbers.valueOf("A" + i).toNumber(), player.getName().toLowerCase()));
 			}
 			for (Map.Entry<Integer, String> entry : slots.entrySet()) {
-				if (entry.getValue().equalsIgnoreCase("null"))
+				if (entry.getValue() == null || entry.getValue().equalsIgnoreCase("null"))
 					entry.setValue(null);
 			}
 			skillBar.setData(slots);
@@ -99,7 +99,8 @@ public class DataManager {
 			
 			for (final Map.Entry<Integer, String> entry : playerData.getSkillBar().getData().entrySet()) {
 				if (database.contains(PLAYER_SKILLBAR, "NAME", playerData.getPlayer().getName().toLowerCase())) {
-					database.update(PLAYER_SKILLBAR, "NAME", String.valueOf(entry.getKey()), playerData.getPlayer().getName().toLowerCase(), entry.getValue());
+					database.update(PLAYER_SKILLBAR, "NAME", Numbers.valueOf("A" + entry.getKey()).toNumber(), playerData.getPlayer().getName().toLowerCase(),
+							(entry.getValue() == null) ? "null" : entry.getValue());
 				} else {
 					database.set(PLAYER_SKILLBAR, playerData.getPlayer().getName().toLowerCase(), zero, one, two, three, four, five, six, seven, eight);
 					break;
@@ -117,6 +118,27 @@ public class DataManager {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	//I know it's stupid, maybe I will change it later
+	private enum Numbers {
+		A0("zero"),
+		A1("one"),
+		A2("two"),
+		A3("three"),
+		A4("four"),
+		A5("five"),
+		A6("six"),
+		A7("seven"),
+		A8("eight");
+		
+		private String number;
+		
+		private Numbers(String number) {
+			this.number = number;
+		}
+		
+		public String toNumber() { return number; }
 	}
 	
 	public static Database getDatabase(DatabaseConfigBuilder builder) {

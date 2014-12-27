@@ -30,12 +30,10 @@ public class PlayerData {
 	
 	private SkillBar skillBar;
 	
-	//Player statistics
 	private HashMap<String, Integer> skills = new HashMap<String, Integer>();
 	public HashMap<Skill, Boolean> lockedTable; 
 	private int playerPoints;
 	
-	//Creating instace of PlayerData for proper Player count PlayerPoints
 	public PlayerData(WHeroesAddon plugin, Player player) {
 		this.p = plugin;
 		this.player = player;
@@ -45,10 +43,6 @@ public class PlayerData {
 		if (Integer.valueOf(playerPoints) == null) {
 			playerPoints = countPlayerPoints();
 		}
-		
-//		for (String skill : hClass.getSkillNames()) {
-//			actualizeMenuVariables(WHeroesAddon.heroes.getSkillManager().getSkill(skill));
-//		}
 		
 		recountLock();
 		
@@ -68,7 +62,6 @@ public class PlayerData {
 		p.getServer().getPluginManager().callEvent(
 				new SkillPointChangeEvent(player, hClass, amount));
 		
-//		actualizeMenuVariables(skill);
 		return true;
 	}
 	
@@ -81,7 +74,6 @@ public class PlayerData {
 		p.getServer().getPluginManager().callEvent(
 				new SkillPointChangeEvent(player, hClass, amount));
 		
-//		actualizeMenuVariables(skill);
 		return true;
 	}
 	
@@ -109,7 +101,7 @@ public class PlayerData {
 	}
 	
 	public boolean canUnlock(Skill skill) {
-		if (!hero.hasAccessToSkill(skill) || !hero.canUseSkill(skill) || !isLocked(skill)) {
+		if (!hero.hasAccessToSkill(skill) || !hero.canUseSkill(skill) || !isLocked(skill) || !(getMaxLevel(skill) == -1)) {
 			return false;
 		} else {
 			return true;
@@ -148,7 +140,6 @@ public class PlayerData {
 		if (!hero.canUseSkill(skill) || !isLocked(skill)) return;
 		if (amount < 0) amount = 0;
 		skills.put(skill.getName(), amount);
-//		actualizeMenuVariables(skill);
 	}
 	
 	public int getUsedPoints() {
@@ -229,7 +220,7 @@ public class PlayerData {
 						}
 					}
 				}
-
+			
 			searchS:
 				if (strongParents != null && !strongParents.isEmpty()) {
 					for (Map.Entry<Skill, Integer> sParents : strongParents.entrySet()) {

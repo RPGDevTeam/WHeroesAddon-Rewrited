@@ -23,7 +23,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -45,8 +44,7 @@ public class SkillTree {
 	
 	private HeroClass hClass;
 	private WHeroesAddon plugin;
-	
-//	private static SMSHandler smsHandler = WHeroesAddon.sms.getHandler();
+
 	private SkillTreeMenu stm;
 	private YamlConfiguration config;
 	
@@ -107,11 +105,15 @@ public class SkillTree {
 			conf.checkFile(conf.getFile());
 			File file = new File(plugin.getDataFolder() + File.separator + "classes", hClass.getName() + ".yml");
 			if (file.exists()) {
-				config = YamlConfiguration.loadConfiguration(file);
+				YamlConfiguration co = YamlConfiguration.loadConfiguration(file);
+				config = co;
+				Properties.classConfig.put(hClass, co);
 				return createClassMenu();
 			}
 			if (conf.getFile().renameTo(file)) {
-				config = YamlConfiguration.loadConfiguration(file);
+				YamlConfiguration co = YamlConfiguration.loadConfiguration(file);
+				config = co;
+				Properties.classConfig.put(hClass, co);
 				generateConfig(file);
 				return createClassMenu();
 			} else {
@@ -135,7 +137,7 @@ public class SkillTree {
 				f.put("Number", number); number++;
 				f.put("IsHide", false);
 				f.put("IsSkill", true);
-				f.put("IsBlockItem", true);
+				f.put("IsBlockItem", false);
 				f.put("Indicator", "STONE");
 				f.put("Lore", Arrays.asList("&f§lLevel§f: &o%level%/%maxlevel%", "&f§oLevel needed§f: %lvlneed%" , "", "&6&o%description%", "", "&f&o%canIUpgrade%"));
 				hashMap.add(f);
@@ -154,6 +156,7 @@ public class SkillTree {
 	@SuppressWarnings("unchecked")
 	private SkillTreeMenu createClassMenu() {
 		SkillTreeMenu menu = new SkillTreeMenu(Utils.u(config.getString("DisplayName")), Size.fit(hClass.getSkillNames().size()), plugin, hClass);
+		int amount = 1;
 		for (Map<?, ?> map : config.getMapList("Items")) {
 			MenuItem item;
 			if ((boolean) map.get("IsSkill") == true) {
@@ -170,7 +173,12 @@ public class SkillTree {
 				String[] lore = (Utils.u((List<String>) map.get("Lore"))).toArray(new String[0]);
 				item = new MenuItem(Utils.u((String) map.get("DisplayName")), stack, lore);
 			}
-			menu.setItem((int) map.get("Number"), item);
+			amount++;
+			if (amount <= 54) {
+				menu.setItem((int) map.get("Number"), item);
+			} else {
+				break;
+			}
 		}
 		return menu;
 	}
@@ -227,13 +235,8 @@ public class SkillTree {
 		
 		@Override
 		public void onItemClick(ItemClickEvent event) {
-			SkillBar sb = WHeroesAddon.getInstance().getPlayerData(event.getPlayer()).getSkillBar();
-			if (event.getClickType() == ClickType.SHIFT_RIGHT || event.getClickType() == ClickType.SHIFT_LEFT) {
-				sb.assignSkill(skill, sb.getHandSlot());
-			} else {
-				event.getPlayer().performCommand("st up " + skill.getName());
-				//TODO add possibility to downgrade skill here (only if allowed in Properties)
-			}
+			event.getPlayer().performCommand("st up " + skill.getName());
+			//TODO add possibility to downgrade skill here (only if allowed in Properties)
 		}
 		
 		@Override
@@ -258,7 +261,8 @@ public class SkillTree {
 					lore = lore.replace("%lvlneed%", String.valueOf((int) SkillConfigManager.getSetting(
 							WHeroesAddon.heroes.getCharacterManager().getHero(player).getHeroClass(), skill, "level", 1.0D)));
 					lore = lore.replace("%skill%", skill.getName());
-					lore = lore.replace("%canIUpgrade%", (pd.canUnlock(skill) && pd.getPoints() > 1) ? "§2§oYou can upgrade it" : "§c§oYou cannot upgrade it yet");
+					lore = lore.replace("%canIUpgrade%", (pd.canUnlock(skill) || pd.getPoints() > 0 || pd.getMaxLevel(skill) != -1) ?
+							"§2§oYou can upgrade it" : "§c§oYou cannot upgrade it yet");
 					//TODO make langauge support here
 				}
 				newLore.add(lore);
@@ -272,7 +276,7 @@ public class SkillTree {
 		public boolean isHide() { return isHide; }
 	}
 	
-	private static class BarBlockItem extends MenuItem {
+	public static class BarBlockItem extends MenuItem {
 		public BarBlockItem(String displayName, ItemStack icon, String[] lore) {
 			super(displayName, icon, lore);
 		}
@@ -290,6 +294,7 @@ public class SkillTree {
 		private JavaPlugin plugin;
 		private Size size;
 		private String name;
+		
 		public SkillTreeMenu(String name, Size size, JavaPlugin plugin, HeroClass hClass) {
 			super(name, size, plugin);
 			this.plugin = plugin;

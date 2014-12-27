@@ -7,8 +7,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-public class CommandManager implements CommandExecutor {
+public class CommandManager implements CommandExecutor, Listener {
 	private WHeroesAddon plugin;
 	
 	public CommandManager(WHeroesAddon plugin) {
@@ -32,7 +35,18 @@ public class CommandManager implements CommandExecutor {
 				plugin.getSkillTree(WHeroesAddon.heroes.getCharacterManager().getHero((Player) sender).getHeroClass()).showMenu((Player) sender);
 			}
 			return true;
+		} else if (cmd.getName().equalsIgnoreCase("classchoose")) { //TODO add argument in Properties
+			plugin.getChooseMenu().open((Player) sender); 
 		}
 		return false;
+	}
+	
+	@EventHandler
+	public void onCommandPreprocess(PlayerCommandPreprocessEvent event) {	 
+		Player sender = event.getPlayer();
+		if (event.getMessage().equalsIgnoreCase("/skills")) {
+			event.setCancelled(true);
+			plugin.getSkillBook(WHeroesAddon.heroes.getCharacterManager().getHero(sender).getHeroClass()).open(sender);
+		}
 	}
 }

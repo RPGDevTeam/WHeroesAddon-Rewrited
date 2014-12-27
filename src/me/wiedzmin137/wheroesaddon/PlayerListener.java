@@ -46,6 +46,9 @@ public class PlayerListener implements Listener {
 							hero.removeEffect(effect);
 					}
 				}
+				if (hero.getHeroClass().isDefault()) { //TODO add Properties value
+					p.getChooseMenu().open(hero.getPlayer());
+				}
 			}
 		}, 1L);
 	}

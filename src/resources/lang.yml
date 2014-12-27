@@ -12,6 +12,9 @@ GUI:
   LoreMana: '&f&oMana: %manaCost%'
   TitleSkill: '&2&l[&r&a%skill%&2&l]'
   TitleChoose: '&1== &bChoose your class! &1=='
+CooldownScoreboard:
+  Name: '&4&lCooldowns'
+  Item: '&6%skill%'
 SkillTree:
   Gain: You have gained %amount% skill points!
   Error:

@@ -41,13 +41,8 @@ public class SkillBar {
 		this.plugin = plugin;
 		this.player = player;
 		this.hero = WHeroesAddon.heroes.getCharacterManager().getHero(player);
-		for (int i = 1; i <= 9; i++) {
-			//TODO load from database and setup current state for skills field
-			//slots.put(i, UNASSIGNED);
-		}
 	}
 	
-	//TODO set enabled onGameModeChange
 	public boolean isEnabled() {
 		Player p = player.getPlayer();
 		return p != null && p.getGameMode() != GameMode.CREATIVE;
@@ -128,7 +123,7 @@ public class SkillBar {
 	}
 	
 	public AssignType getAssignType(ItemStack is) {
-		if (is.getType() == Material.AIR)
+		if (is == null || is.getType() == Material.AIR || is.getItemMeta().getLore() == null)
 			return AssignType.NONE;
 		
 		String skill = "null";

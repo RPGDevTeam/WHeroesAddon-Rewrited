@@ -21,6 +21,8 @@ public enum Lang {
 	GUI_LORE_MANA("GUI.LoreMana", "&f&oMana: %manaCost%"),
 	GUI_TITLE_SKILL("GUI.TitleSkill", "&2&l[&r&a%skill%&2&l]"),
 	GUI_TITLE_CHOOSE("GUI.TitleChoose", "&1== &bChoose your class! &1=="),
+	COOLDOWN_SCOREBOARD_NAME("CooldownScoreboard.Name", "&4&lCooldowns"),
+	COOLDOWN_SCOREBOARD_ITEM("CooldownScoreboard.Item", "&6%skill%"),
 	SKILLTREE_POINTS_AMOUNT("SkillTree.Points.Amount", "&b[&rYou currently have &9%points% &rSkillPoints&b]"),
 	SKILLTREE_ERROR_NO_ACCESS("SkillTree.Error.NoAccess", "&4You don\'t have this skill"),
 	SKILLTREE_ERROR_TOO_LOW_LEVEL("SkillTree.Error.ToLowLevel", "&cThis skill is not a high enough level"),
